@@ -99,7 +99,7 @@ export default class BB_DiscordTeamkill extends DiscordBasePlugin {
         fields: fields,
         timestamp: info.time.toISOString(),
         footer: {
-          text: ''
+          text: `${info.time.toISOString()}`
         }
       }
     });

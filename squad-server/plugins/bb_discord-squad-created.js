@@ -56,7 +56,7 @@ export default class BB_DiscordSquadCreated extends DiscordBasePlugin {
                 color: this.options.color,
                 timestamp: info.time.toISOString(),
                 footer: {
-                  text: ''
+                  text: `${info.time.toISOString()}`
                 }
             }
         });
