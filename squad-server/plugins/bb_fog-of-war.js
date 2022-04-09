@@ -18,6 +18,11 @@ export default class BB_FogOfWar extends DiscordBasePlugin {
         default: '',
         example: '667741905228136459'
       },
+      color: {
+        required: false,
+        description: 'The color of the embed.',
+        default: 16761867
+      },
       mode: {
         required: false,
         description: 'Fog of war mode to set.',
@@ -27,12 +32,7 @@ export default class BB_FogOfWar extends DiscordBasePlugin {
         required: false,
         description: 'Delay before setting fog of war mode.',
         default: 10 * 1000
-      },
-      color: {
-        required: false,
-        description: 'The color of the embed.',
-        default: 16761867
-      },
+      }
     };
   }
 
@@ -52,6 +52,10 @@ export default class BB_FogOfWar extends DiscordBasePlugin {
 
   async onNewGame() {
     if (this.server.currentLayer?.name.toLowerCase().includes("raas")){
+      this.verbose(
+        1,
+        `BB_FogOfWar revealing FOW for ${this.server.currentLayer?.name}`
+      );
       setTimeout(() => {
           this.server.rcon.setFogOfWar(this.options.mode);
       }, this.options.delay);
@@ -64,6 +68,10 @@ export default class BB_FogOfWar extends DiscordBasePlugin {
           }
       });
     } else {
+      this.verbose(
+        1,
+        `BB_FogOfWar NOT revealing FOW for ${this.server.currentLayer?.name}`
+      );
       await this.sendDiscordMessage({
           embed: {
               title: `No RAAS no reveal.`,
