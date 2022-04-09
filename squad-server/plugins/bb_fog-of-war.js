@@ -11,6 +11,13 @@ export default class BB_FogOfWar extends BasePlugin {
 
   static get optionsSpecification() {
     return {
+      ...DiscordBasePlugin.optionsSpecification,
+      channelID: {
+        required: true,
+        description: 'The ID of the channel to log Squad Creation events to.',
+        default: '',
+        example: '667741905228136459'
+      },
       mode: {
         required: false,
         description: 'Fog of war mode to set.',
@@ -44,20 +51,18 @@ export default class BB_FogOfWar extends BasePlugin {
   }
 
   async onNewGame() {
-
-    setTimeout(() => {
-      if (this.server.currentLayer?.name.toLowerCase().includes("raas")){
-        this.server.rcon.setFogOfWar(this.options.mode);
-        await this.sendDiscordMessage({
-            embed: {
-                title: `RAAS FOW revealed.`,
-                color: this.options.color,
-                description: `[${this.server.currentLayer?.name}]`,
-                timestamp: info.time.toISOString()
-            }
-        });
-      }
-    }, this.options.delay);
-
+    if (this.server.currentLayer?.name.toLowerCase().includes("raas")){
+      setTimeout(() => {
+          this.server.rcon.setFogOfWar(this.options.mode);
+      }, this.options.delay);
+      await this.sendDiscordMessage({
+          embed: {
+              title: `RAAS FOW revealed.`,
+              color: this.options.color,
+              description: `[${this.server.currentLayer?.name}]`,
+              timestamp: info.time.toISOString()
+          }
+      });
+    }
   }
 }
