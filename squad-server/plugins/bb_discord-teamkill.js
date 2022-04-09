@@ -55,7 +55,7 @@ export default class BB_DiscordTeamkill extends DiscordBasePlugin {
       {
         name: "Attacker",
         value: `[${info.attacker.name}](https://www.battlemetrics.com/rcon/players?filter%5Bsearch%5D=${info.attacker.steamID}) - [${info.attacker.steamID}](https://steamcommunity.com/profiles/${info.attacker.steamID})`,
-        //inline: true
+        inline: true
       },
       /*{
         name: "Attacker's SteamID",
@@ -64,12 +64,13 @@ export default class BB_DiscordTeamkill extends DiscordBasePlugin {
       },*/
       {
         name: 'Weapon',
-        value: info.weapon
+        value: info.weapon,
+        inline: true
       },
       {
         name: "Victim",
         value: `[${info.victim.name}](https://www.battlemetrics.com/rcon/players?filter%5Bsearch%5D=${info.victim.steamID}) - [${info.victim.steamID}](https://steamcommunity.com/profiles/${info.victim.steamID})`,
-        //inline: true
+        inline: true
       },
       /*{
         name: "Victim's SteamID",
