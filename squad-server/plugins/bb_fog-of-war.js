@@ -1,6 +1,6 @@
-import BasePlugin from './base-plugin.js';
+import DiscordBasePlugin from './discord-base-plugin.js';
 
-export default class BB_FogOfWar extends BasePlugin {
+export default class BB_FogOfWar extends DiscordBasePlugin {
   static get description() {
     return 'The <code>BB_FogOfWar</code> plugin can be used to automate setting fog of war mode. - With adaptation to BB needs.';
   }
