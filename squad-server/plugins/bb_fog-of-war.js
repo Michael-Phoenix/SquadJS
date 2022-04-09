@@ -71,7 +71,8 @@ export default class BB_FogOfWar extends DiscordBasePlugin {
                 timestamp: info.time.toISOString()
             }
         });
-      }, this.options.delay);
-    }
+      }
+    }, this.options.delay);
+
   }
 }
