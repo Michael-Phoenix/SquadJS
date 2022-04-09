@@ -254,6 +254,7 @@ export default class SquadServer extends EventEmitter {
       delete data.attackerName;
 
       this.emit('PLAYER_DIED', data);
+      if (data.teamkill && data.damage >=100) this.emit('TEAMKILL', data);
     });
 
     this.logParser.on('PLAYER_REVIVED', async (data) => {
