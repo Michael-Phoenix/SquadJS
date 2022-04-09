@@ -87,7 +87,7 @@ export default class BB_DiscordTeamkill extends DiscordBasePlugin {
 
     fields.push({
       name: 'Timestamp',
-      value: `${info.time.toString()}`,
+      value: `${info.time.toISOString()}`,
       inline: true
     });
 
