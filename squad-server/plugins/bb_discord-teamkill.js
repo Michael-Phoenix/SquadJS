@@ -54,38 +54,41 @@ export default class BB_DiscordTeamkill extends DiscordBasePlugin {
     const fields = [
       {
         name: "Attacker",
-        value: `[${info.attacker.name}](https://www.battlemetrics.com/rcon/players?filter%5Bsearch%5D=${info.attacker.steamID})`,
-        inline: true
+        value: `[${info.attacker.name}](https://www.battlemetrics.com/rcon/players?filter%5Bsearch%5D=${info.attacker.steamID}) [${info.attacker.steamID}](https://steamcommunity.com/profiles/${info.attacker.steamID})`,
+        //inline: true
       },
-      {
+      /*{
         name: "Attacker's SteamID",
         value: `[${info.attacker.steamID}](https://steamcommunity.com/profiles/${info.attacker.steamID})`,
         inline: true
-      },
+      },*/
       {
         name: 'Weapon',
         value: info.weapon
       },
       {
         name: "Victim",
-        value: `[${info.victim.name}](https://www.battlemetrics.com/rcon/players?filter%5Bsearch%5D=${info.victim.steamID})`,
-        inline: true
+        value: `[${info.victim.name}](https://www.battlemetrics.com/rcon/players?filter%5Bsearch%5D=${info.victim.steamID}) [${info.victim.steamID}](https://steamcommunity.com/profiles/${info.victim.steamID})`,
+        //inline: true
       },
-      {
+      /*{
         name: "Victim's SteamID",
         value: `[${info.victim.steamID}](https://steamcommunity.com/profiles/${info.victim.steamID})`,
         inline: true
-      }
+      }*/
     ];
 
     if (!this.options.disableSCBL)
       fields.push({
         name: 'Squad Community Ban List',
-        value: `[Attacker's Bans](https://squad-community-ban-list.com/search/${info.attacker.steamID})`
+        value: `[Attacker's Bans](https://squad-community-ban-list.com/search/${info.attacker.steamID})`,
+          inline: true
       });
 
     fields.push({
-      value: `${info.time.toString()}`
+      name: 'Timestamp',
+      value: `${info.time.toString()}`,
+      inline: true
     });
 
     await this.sendDiscordMessage({
