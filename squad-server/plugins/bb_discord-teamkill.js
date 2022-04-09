@@ -54,7 +54,7 @@ export default class BB_DiscordTeamkill extends DiscordBasePlugin {
     const fields = [
       {
         name: "Attacker",
-        value: `[${info.attacker.name}](https://www.battlemetrics.com/rcon/players?filter%5Bsearch%5D=${info.attacker.steamID}) - [${info.attacker.steamID}](https://steamcommunity.com/profiles/${info.attacker.steamID})`,
+        value: `[${info.attacker.name}](https://www.battlemetrics.com/rcon/players?filter%5Bsearch%5D=${info.attacker.steamID}) - [Steam](https://steamcommunity.com/profiles/${info.attacker.steamID}) - [SCBL](https://squad-community-ban-list.com/search/${info.attacker.steamID})`,
         inline: true
       },
       /*{
@@ -71,7 +71,7 @@ export default class BB_DiscordTeamkill extends DiscordBasePlugin {
         name: "Victim",
         value: `[${info.victim.name}](https://www.battlemetrics.com/rcon/players?filter%5Bsearch%5D=${info.victim.steamID}) - [${info.victim.steamID}](https://steamcommunity.com/profiles/${info.victim.steamID})`,
         inline: true
-      },
+      }
       /*{
         name: "Victim's SteamID",
         value: `[${info.victim.steamID}](https://steamcommunity.com/profiles/${info.victim.steamID})`,
@@ -79,10 +79,10 @@ export default class BB_DiscordTeamkill extends DiscordBasePlugin {
       }*/
     ];
 
-    if (!this.options.disableSCBL)
+    /*if (!this.options.disableSCBL)
       fields.push({
         name: 'SCBL',
-        value: `[Attacker's Bans](https://squad-community-ban-list.com/search/${info.attacker.steamID})`,
+        value: `[SCBL](https://squad-community-ban-list.com/search/${info.attacker.steamID})`,
           inline: true
       });
 
@@ -90,7 +90,7 @@ export default class BB_DiscordTeamkill extends DiscordBasePlugin {
       name: 'Timestamp',
       value: `${info.time.toISOString()}`,
       inline: true
-    });
+    });*/
 
     await this.sendDiscordMessage({
       embed: {
