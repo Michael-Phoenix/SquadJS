@@ -97,7 +97,10 @@ export default class BB_DiscordTeamkill extends DiscordBasePlugin {
         //title: `Teamkill: ${info.attacker.name}`,
         color: this.options.color,
         fields: fields,
-        timestamp: info.time.toISOString()
+        timestamp: info.time.toISOString(),
+        footer: {
+          text: ''
+        }
       }
     });
   }

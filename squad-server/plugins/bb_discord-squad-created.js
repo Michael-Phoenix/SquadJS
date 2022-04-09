@@ -54,7 +54,10 @@ export default class BB_DiscordSquadCreated extends DiscordBasePlugin {
                 //title: `${info.player.name} created ${info.teamName} Squad#${info.player.squadID} : ${info.squadName}`,
                 description: `[${info.player.name}](https://www.battlemetrics.com/rcon/players?filter%5Bsearch%5D=${info.player.steamID}) created ${info.teamName} Squad#${info.player.squadID} : ${info.squadName}`,
                 color: this.options.color,
-                timestamp: info.time.toISOString()
+                timestamp: info.time.toISOString(),
+                footer: {
+                  text: ''
+                }
             }
         });
 
