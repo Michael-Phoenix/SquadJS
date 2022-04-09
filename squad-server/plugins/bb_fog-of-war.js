@@ -50,12 +50,8 @@ export default class BB_FogOfWar extends DiscordBasePlugin {
     this.server.removeEventListener('NEW_GAME', this.onNewGame);
   }
 
-  async onNewGame() {
+  async onNewGame(info) {
     if (this.server.currentLayer?.name.toLowerCase().includes("raas")){
-      this.verbose(
-        1,
-        `BB_FogOfWar revealing FOW for ${this.server.currentLayer?.name}`
-      );
       setTimeout(() => {
           this.server.rcon.setFogOfWar(this.options.mode);
       }, this.options.delay);
@@ -68,13 +64,9 @@ export default class BB_FogOfWar extends DiscordBasePlugin {
           }
       });
     } else {
-      this.verbose(
-        1,
-        `BB_FogOfWar NOT revealing FOW for ${this.server.currentLayer?.name}`
-      );
       await this.sendDiscordMessage({
           embed: {
-              title: `No RAAS no reveal.`,
+              title: `No RAAS, no reveal.`,
               color: this.options.color,
               description: `[${this.server.currentLayer?.name}]`,
               timestamp: info.time.toISOString()
