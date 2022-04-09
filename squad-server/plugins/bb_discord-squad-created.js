@@ -52,25 +52,8 @@ export default class BB_DiscordSquadCreated extends DiscordBasePlugin {
         await this.sendDiscordMessage({
             embed: {
                 title: `${info.player.name} created ${info.teamName} Squad#${info.player.squadID} : ${info.squadName}`,
-                description: `[BM Link](https://www.battlemetrics.com/rcon/players?filter%5Bsearch%5D=${info.player.steamID}) - [Steam Link](https://steamcommunity.com/profiles/${info.victim.steamID})`,
+                description: `[BM Link](https://www.battlemetrics.com/rcon/players?filter%5Bsearch%5D=${info.player.steamID}) - [Steam Link](https://steamcommunity.com/profiles/${info.player.steamID})`,
                 color: this.options.color,
-                                /*fields: [
-                {
-                    name: 'Player',
-                    value: `[${info.player.name}](https://www.battlemetrics.com/rcon/players?filter%5Bsearch%5D=${info.player.steamID})`,
-                    inline: true
-                },
-                {
-                    name: 'Team',
-                    value: info.teamName,
-                    inline: true
-                },
-                {
-                    name: 'Squad Number & Squad Name',
-                    value: `#${info.player.squadID} : ${info.squadName}`,
-                    inline: true
-                }
-                ],//*/
                 timestamp: info.time.toISOString()
             }
         });
