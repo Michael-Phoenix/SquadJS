@@ -69,7 +69,7 @@ export default class BB_DiscordTeamkill extends DiscordBasePlugin {
       },
       {
         name: "Victim",
-        value: `[${info.victim.name}](https://www.battlemetrics.com/rcon/players?filter%5Bsearch%5D=${info.victim.steamID}) - [${info.victim.steamID}](https://steamcommunity.com/profiles/${info.victim.steamID})`,
+        value: `[${info.victim.name}](https://www.battlemetrics.com/rcon/players?filter%5Bsearch%5D=${info.victim.steamID}) - [Steam](https://steamcommunity.com/profiles/${info.victim.steamID})`,
         inline: true
       }
       /*{
