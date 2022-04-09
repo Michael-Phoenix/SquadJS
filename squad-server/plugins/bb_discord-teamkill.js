@@ -53,7 +53,7 @@ export default class BB_DiscordTeamkill extends DiscordBasePlugin {
 
     const fields = [
       {
-        name: "Attacker",
+        name: "Teamkiller",
         value: `[${info.attacker.name}](https://www.battlemetrics.com/rcon/players?filter%5Bsearch%5D=${info.attacker.steamID}) - [Steam](https://steamcommunity.com/profiles/${info.attacker.steamID}) - [SCBL](https://squad-community-ban-list.com/search/${info.attacker.steamID})`,
         inline: true
       },
@@ -94,7 +94,7 @@ export default class BB_DiscordTeamkill extends DiscordBasePlugin {
 
     await this.sendDiscordMessage({
       embed: {
-        title: `Teamkill: ${info.attacker.name}`,
+        //title: `Teamkill: ${info.attacker.name}`,
         color: this.options.color,
         fields: fields,
         timestamp: info.time.toISOString()
