@@ -51,28 +51,27 @@ export default class BB_FogOfWar extends DiscordBasePlugin {
   }
 
   async onNewGame() {
-    setTimeout(() => {
-      if (this.server.currentLayer?.name.toLowerCase().includes("raas")){
-        this.server.rcon.setFogOfWar(this.options.mode);
-        await this.sendDiscordMessage({
-            embed: {
-                title: `RAAS FOW revealed.`,
-                color: this.options.color,
-                description: `[${this.server.currentLayer?.name}]`,
-                timestamp: info.time.toISOString()
-            }
-        });
-      } else {
-        await this.sendDiscordMessage({
-            embed: {
-                title: `No RAAS no reveal.`,
-                color: this.options.color,
-                description: `[${this.server.currentLayer?.name}]`,
-                timestamp: info.time.toISOString()
-            }
-        });
-      }
-    }, this.options.delay);
-
+    if (this.server.currentLayer?.name.toLowerCase().includes("raas")){
+      setTimeout(() => {
+          this.server.rcon.setFogOfWar(this.options.mode);
+      }, this.options.delay);
+      await this.sendDiscordMessage({
+          embed: {
+              title: `RAAS FOW revealed.`,
+              color: this.options.color,
+              description: `[${this.server.currentLayer?.name}]`,
+              timestamp: info.time.toISOString()
+          }
+      });
+    } else {
+      await this.sendDiscordMessage({
+          embed: {
+              title: `No RAAS no reveal.`,
+              color: this.options.color,
+              description: `[${this.server.currentLayer?.name}]`,
+              timestamp: info.time.toISOString()
+          }
+      });
+    }
   }
 }
