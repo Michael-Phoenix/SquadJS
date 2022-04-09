@@ -14,7 +14,7 @@ export default class BB_FogOfWar extends DiscordBasePlugin {
       ...DiscordBasePlugin.optionsSpecification,
       channelID: {
         required: true,
-        description: 'The ID of the channel to log Squad Creation events to.',
+        description: 'The ID of the channel to log Fog of War events to.',
         default: '',
         example: '667741905228136459'
       },
@@ -51,18 +51,27 @@ export default class BB_FogOfWar extends DiscordBasePlugin {
   }
 
   async onNewGame() {
-    if (this.server.currentLayer?.name.toLowerCase().includes("raas")){
-      setTimeout(() => {
-          this.server.rcon.setFogOfWar(this.options.mode);
+    setTimeout(() => {
+      if (this.server.currentLayer?.name.toLowerCase().includes("raas")){
+        this.server.rcon.setFogOfWar(this.options.mode);
+        await this.sendDiscordMessage({
+            embed: {
+                title: `RAAS FOW revealed.`,
+                color: this.options.color,
+                description: `[${this.server.currentLayer?.name}]`,
+                timestamp: info.time.toISOString()
+            }
+        });
+      } else {
+        await this.sendDiscordMessage({
+            embed: {
+                title: `No RAAS no reveal.`,
+                color: this.options.color,
+                description: `[${this.server.currentLayer?.name}]`,
+                timestamp: info.time.toISOString()
+            }
+        });
       }, this.options.delay);
-      await this.sendDiscordMessage({
-          embed: {
-              title: `RAAS FOW revealed.`,
-              color: this.options.color,
-              description: `[${this.server.currentLayer?.name}]`,
-              timestamp: info.time.toISOString()
-          }
-      });
     }
   }
 }

@@ -51,10 +51,10 @@ export default class BB_DiscordSquadCreated extends DiscordBasePlugin {
 
         await this.sendDiscordMessage({
             embed: {
-                title: `Squad Created`,
+                title: `[${info.player.name}](https://www.battlemetrics.com/rcon/players?filter%5Bsearch%5D=${info.player.steamID}) created ${info.teamName} Squad#${info.player.squadID} : ${info.squadName}`,
+                //title: `Squad Created`,
                 color: this.options.color,
-                description: `[${info.player.name}](https://www.battlemetrics.com/rcon/players?filter%5Bsearch%5D=${info.player.steamID}) created ${info.teamName} Squad#${info.player.squadID} : ${info.squadName}`,
-                /*fields: [
+                                /*fields: [
                 {
                     name: 'Player',
                     value: `[${info.player.name}](https://www.battlemetrics.com/rcon/players?filter%5Bsearch%5D=${info.player.steamID})`,
