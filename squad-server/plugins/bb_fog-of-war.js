@@ -20,7 +20,12 @@ export default class BB_FogOfWar extends BasePlugin {
         required: false,
         description: 'Delay before setting fog of war mode.',
         default: 10 * 1000
-      }
+      },
+      color: {
+        required: false,
+        description: 'The color of the embed.',
+        default: 16761867
+      },
     };
   }
 
@@ -43,6 +48,14 @@ export default class BB_FogOfWar extends BasePlugin {
     setTimeout(() => {
       if (this.server.currentLayer?.name.toLowerCase().includes("raas")){
         this.server.rcon.setFogOfWar(this.options.mode);
+        await this.sendDiscordMessage({
+            embed: {
+                title: `RAAS FOW revealed.`,
+                color: this.options.color,
+                description: `[${this.server.currentLayer?.name}]`,
+                timestamp: info.time.toISOString()
+            }
+        });
       }
     }, this.options.delay);
 
