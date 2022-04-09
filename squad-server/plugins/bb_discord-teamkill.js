@@ -84,9 +84,13 @@ export default class BB_DiscordTeamkill extends DiscordBasePlugin {
         value: `[Attacker's Bans](https://squad-community-ban-list.com/search/${info.attacker.steamID})`
       });
 
+    fields.push({
+      value: `${info.time.toString()}`
+    });
+
     await this.sendDiscordMessage({
       embed: {
-        title: `${info.time.toString()} - Teamkill: ${info.attacker.name}`,
+        title: `Teamkill: ${info.attacker.name}`,
         color: this.options.color,
         fields: fields,
         timestamp: info.time.toISOString()
