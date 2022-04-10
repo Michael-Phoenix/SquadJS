@@ -224,7 +224,6 @@ export default class SquadServer extends EventEmitter {
       delete data.attackerName;
 
       this.emit('PLAYER_DAMAGED', data);
-      if (data.teamkill && data.damage >=100) this.emit('TEAMKILL', data);
     });
 
     this.logParser.on('PLAYER_WOUNDED', async (data) => {
@@ -240,7 +239,7 @@ export default class SquadServer extends EventEmitter {
       delete data.attackerName;
 
       this.emit('PLAYER_WOUNDED', data);
-      if (data.teamkill && data.damage <100) this.emit('TEAMKILL', data);
+      if (data.teamkill) this.emit('TEAMKILL', data);
     });
 
     this.logParser.on('PLAYER_DIED', async (data) => {
