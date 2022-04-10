@@ -7,6 +7,7 @@ import PlayerConnected from './player-connected.js';
 import PlayerDisconnected from './player-disconnected.js';
 import PlayerDamaged from './player-damaged.js';
 import PlayerDied from './player-died.js';
+import PlayerTeamkilled from './player-teamkilled.js';
 import PlayerPossess from './player-possess.js';
 import PlayerRevived from './player-revived.js';
 import PlayerUnPossess from './player-un-possess.js';
@@ -30,6 +31,7 @@ export default class SquadLogParser extends LogParser {
       PlayerDisconnected,
       PlayerDamaged,
       PlayerDied,
+      PlayerTeamkilled,
       PlayerPossess,
       PlayerRevived,
       PlayerUnPossess,
