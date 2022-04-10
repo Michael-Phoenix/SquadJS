@@ -229,7 +229,7 @@ export default class SquadServer extends EventEmitter {
     this.logParser.on('PLAYER_WOUNDED', async (data) => {
       data.victim = await this.getPlayerByName(data.victimName);
       data.attacker = await this.getPlayerByName(data.attackerName);
-      Logger.verbose('LogParser', 3, `Victim Name: ${data.victimName}, Attacker Name: ${data.attackerName}, FoundVictim Name: ${data.victim.name}, FoundAttacker Name: ${data.attacker.name}`);
+      Logger.verbose('LogParser', 3, `Victim Name: ${data.victimName}, Attacker Name: ${data.attackerName}, FoundVictim Name: ${data.victim?.name}, FoundAttacker Name: ${data.attacker?.name}`);
       if (data.victim && data.attacker)
         data.teamkill =
           data.victim.teamID === data.attacker.teamID &&
