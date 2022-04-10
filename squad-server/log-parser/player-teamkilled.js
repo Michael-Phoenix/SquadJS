@@ -3,7 +3,6 @@ export default {
   regex: /^\[([0-9.:-]+)]\[([ 0-9]*)]LogSquadScorePoints: Verbose: ScorePointsDelayed: Points: .* ScoreEvent: TeamKilled ([A-z_0-9]+)/,
   onMatch: (args, logParser) => {
     if(logParser.eventStore["nullptr"].chainID == args[2]){
-      wasNullptr = true
       const data = {
         ...logParser.eventStore["nullptr"],
         raw: args[0],
