@@ -194,7 +194,7 @@ export default class SquadServer extends EventEmitter {
     });
 
     this.logParser.on('PLAYER_CONNECTED', async (data) => {
-      data.player = await this.getPlayerBySteamID(data.steamID);
+      data.player = await this.getPlayerBySteamID(data.steamID, true);
       if (data.player) data.player.suffix = data.playerSuffix;
       if (data.player) data.player.controller = data.playerController;
       delete data.steamID;
