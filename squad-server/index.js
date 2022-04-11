@@ -228,6 +228,7 @@ export default class SquadServer extends EventEmitter {
     });
 
     this.logParser.on('PLAYER_WOUNDED', async (data) => {
+      Logger.verbose('LogParser', 3, `PLAYER_WOUNDED was called.`);
       data.victim = await this.getPlayerByName(data.victimName);
       //if(!data.victim) data.victim = await this.getPlayerByPlayerController(data.victimName);
       data.attacker = await this.getPlayerByName(data.attackerName);
