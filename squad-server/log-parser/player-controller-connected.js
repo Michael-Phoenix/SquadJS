@@ -9,6 +9,5 @@ export default {
       playerController: args[3]
     };
     logParser.eventStore['player-login'] = data;
-    logParser.emit('PLAYER_CONTROLLER_CONNECTED', data);
   }
 };
