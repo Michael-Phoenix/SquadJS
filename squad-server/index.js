@@ -196,9 +196,10 @@ export default class SquadServer extends EventEmitter {
     this.logParser.on('PLAYER_CONNECTED', async (data) => {
       data.player = await this.getPlayerBySteamID(data.steamID);
       if (data.player) data.player.suffix = data.playerSuffix;
-
+      if (data.player) data.player.controller = data.playerController;
       delete data.steamID;
       delete data.playerSuffix;
+      delete data.playerController;
 
       this.emit('PLAYER_CONNECTED', data);
     });
@@ -228,7 +229,10 @@ export default class SquadServer extends EventEmitter {
 
     this.logParser.on('PLAYER_WOUNDED', async (data) => {
       data.victim = await this.getPlayerByName(data.victimName);
+      //if(!data.victim) data.victim = await this.getPlayerByPlayerController(data.victimName);
       data.attacker = await this.getPlayerByName(data.attackerName);
+      if(!data.attacker) data.attacker = await this.getPlayerByPlayerController(data.attackerPlayerController);
+
       Logger.verbose('LogParser', 3, `Victim Name: ${data.victimName}, Attacker Name: ${data.attackerName}, FoundVictim Name: ${data.victim?.name}, FoundAttacker Name: ${data.attacker?.name}`);
       if (data.victim && data.attacker)
         data.teamkill =
@@ -244,6 +248,8 @@ export default class SquadServer extends EventEmitter {
 
     this.logParser.on('PLAYER_DIED', async (data) => {
       data.victim = await this.getPlayerByName(data.victimName);
+      //if(!data.victim) data.victim = await this.getPlayerByPlayerController(data.victimName);
+      if(!data.attacker) data.attacker = await this.getPlayerByPlayerController(data.attackerPlayerController);
 
       if (data.victim && data.attacker)
         data.teamkill =
@@ -529,6 +535,10 @@ export default class SquadServer extends EventEmitter {
 
   async getPlayerByNameSuffix(suffix, forceUpdate) {
     return this.getPlayerByCondition((player) => player.suffix === suffix, forceUpdate, false);
+  }
+
+  async getPlayerByPlayerController(playerController, forceUpdate) {
+    return this.getPlayerByCondition((player) => player?.controller === playerController, forceUpdate);
   }
 
   async pingSquadJSAPI() {
