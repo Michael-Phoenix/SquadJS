@@ -232,7 +232,7 @@ export default class SquadServer extends EventEmitter {
       data.victim = await this.getPlayerByName(data.victimName);
       //if(!data.victim) data.victim = await this.getPlayerByPlayerController(data.victimName);
       data.attacker = await this.getPlayerByName(data.attackerName);
-      if(!data.attacker) data.attacker = await this.getPlayerByPlayerController(data.attackerPlayerController);
+      if(!data.attacker && data.attackerPlayerController !== null) data.attacker = await this.getPlayerByPlayerController(data.attackerPlayerController);
 
       Logger.verbose('LogParser', 3, `Victim Name: ${data.victimName}, Attacker Name: ${data.attackerName}, FoundVictim Name: ${data.victim?.name}, FoundAttacker Name: ${data.attacker?.name}`);
       if (data.victim && data.attacker)
@@ -539,7 +539,7 @@ export default class SquadServer extends EventEmitter {
   }
 
   async getPlayerByPlayerController(playerController, forceUpdate) {
-    return this.getPlayerByCondition((player) => player?.controller === playerController, forceUpdate);
+    return this.getPlayerByCondition((player) => player.controller === playerController, forceUpdate, false);
   }
 
   async pingSquadJSAPI() {
