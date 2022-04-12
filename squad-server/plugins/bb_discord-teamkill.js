@@ -51,7 +51,7 @@ export default class BB_DiscordTeamkill extends DiscordBasePlugin {
   async onTeamkill(info) {
     if (!info.attacker) return;
 
-    const fields = [
+    /*const fields = [
       {
         name: "Teamkiller",
         value: `[${info.attacker.name}](https://www.battlemetrics.com/rcon/players?filter%5Bsearch%5D=${info.attacker.steamID}) - [SCBL-Link](https://squad-community-ban-list.com/search/${info.attacker.steamID})`,
@@ -62,7 +62,7 @@ export default class BB_DiscordTeamkill extends DiscordBasePlugin {
         value: `[${info.attacker.steamID}](https://steamcommunity.com/profiles/${info.attacker.steamID})`,
         inline: true
       },*/
-      {
+      /*{
         name: 'Weapon',
         value: info.weapon,
         inline: true
@@ -76,8 +76,8 @@ export default class BB_DiscordTeamkill extends DiscordBasePlugin {
         name: "Victim's SteamID",
         value: `[${info.victim.steamID}](https://steamcommunity.com/profiles/${info.victim.steamID})`,
         inline: true
-      }*/
-    ];
+      }//*/
+    //];*/
 
     /*if (!this.options.disableSCBL)
       fields.push({
@@ -91,8 +91,10 @@ export default class BB_DiscordTeamkill extends DiscordBasePlugin {
       value: `${info.time.toISOString()}`,
       inline: true
     });*/
+    await this.sendDiscordMessage(` \`\`\`python
+[${info.time.toISOString()}] Player: ${info.attacker.name}\n Teamkilled ${info.victim.name} using ${info.weapon}\`\`\` `)
 
-    await this.sendDiscordMessage({
+    /*await this.sendDiscordMessage({
       embed: {
         //title: `Teamkill: ${info.attacker.name}`,
         color: this.options.color,
@@ -102,6 +104,6 @@ export default class BB_DiscordTeamkill extends DiscordBasePlugin {
           text: `${info.time.toISOString()}`
         }
       }
-    });
+    });*/
   }
 }
