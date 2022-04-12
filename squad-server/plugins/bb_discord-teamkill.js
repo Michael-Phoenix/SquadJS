@@ -92,7 +92,7 @@ export default class BB_DiscordTeamkill extends DiscordBasePlugin {
       inline: true
     });*/
     await this.sendDiscordMessage(` \`\`\`python
-[${info.time.toISOString()}] TEAMKILL ${info.attacker.steamID}:"${info.attacker.name}"\n Teamkilled "${info.victim.name}" using "${info.weapon}"\`\`\` `)
+[${info.time.toISOString()}] TEAMKILL ${info.attacker.steamID}:"${info.attacker.name}" Teamkilled "${info.victim.name}" using "${info.weapon}"\`\`\` `)
 
     /*await this.sendDiscordMessage({
       embed: {
