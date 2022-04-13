@@ -2,7 +2,7 @@ import EventEmitter from 'events';
 
 import async from 'async';
 import moment from 'moment';
-
+import fs from 'fs';
 import Logger from '../logger.js';
 
 import TailLogReader from './log-readers/tail.js';
@@ -15,7 +15,7 @@ export default class LogParser extends EventEmitter {
     options.filename = filename;
 
     this.eventStore = {};
-
+    this.syncData = null;
     this.linesPerMinute = 0;
     this.matchingLinesPerMinute = 0;
     this.matchingLatency = 0;
@@ -50,6 +50,20 @@ export default class LogParser extends EventEmitter {
       match[1] = moment.utc(match[1], 'YYYY.MM.DD-hh.mm.ss:SSS').toDate();
       match[2] = parseInt(match[2]);
 
+      if (!this.syncData) {
+        this.saveSyncLine(match[0]);
+      }
+
+      // Line newer than our syncdata: New Squadlog instance
+      if (match[1] > this.syncData[1]) {
+        this.syncData = null;
+        this.saveSyncLine(match[0]);
+      }
+      // Line is the same as our syncdata: we've caught up.
+      if (match[0] === this.syncData[0]) {
+        this.syncData = null;
+      }
+
       rule.onMatch(match, this);
 
       this.matchingLinesPerMinute++;
@@ -65,11 +79,30 @@ export default class LogParser extends EventEmitter {
     return [];
   }
 
+  async getSyncLine() {
+    if (!fs.existsSync('syncData.tmp')) {
+      Logger.verbose('LogParser', 1, 'No Sync file found...');
+      return;
+    }
+    Logger.verbose('LogParser', 1, 'Loading Sync File...');
+    let line = fs.readFileSync('syncData.tmp', 'utf8');
+    line = line.match(/^\[([0-9.:-]+)]/);
+    line[1] = moment.utc(line[1], 'YYYY.MM.DD-hh.mm.ss:SSS').toDate();
+    return line;
+  }
+
+  async saveSyncLine(line) {
+    Logger.verbose('LogParser', 2, 'Saving Sync File...');
+    fs.writeFile('syncData.tmp', line, (err) => {
+      if (err) throw err;
+    });
+  }
+
   async watch() {
+    this.syncData = this.getSyncLine();
     Logger.verbose('LogParser', 1, 'Attempting to watch log file...');
     await this.logReader.watch();
     Logger.verbose('LogParser', 1, 'Watching log file...');
-
     this.parsingStatsInterval = setInterval(this.logStats, 60 * 1000);
   }
 

@@ -172,7 +172,7 @@ export default class SquadServer extends EventEmitter {
     );
 
     this.logParser.on('ADMIN_BROADCAST', (data) => {
-      this.emit('ADMIN_BROADCAST', data);
+      this.emitProxy('ADMIN_BROADCAST', data);
     });
 
     this.logParser.on('DEPLOYABLE_DAMAGED', async (data) => {
@@ -180,7 +180,7 @@ export default class SquadServer extends EventEmitter {
 
       delete data.playerSuffix;
 
-      this.emit('DEPLOYABLE_DAMAGED', data);
+      this.emitProxy('DEPLOYABLE_DAMAGED', data);
     });
 
     this.logParser.on('NEW_GAME', async (data) => {
@@ -190,17 +190,39 @@ export default class SquadServer extends EventEmitter {
       this.layerHistory = this.layerHistory.slice(0, this.layerHistoryMaxLength);
 
       this.currentLayer = data.layer;
-      this.emit('NEW_GAME', data);
+      this.emitProxy('NEW_GAME', data);
     });
 
     this.logParser.on('PLAYER_CONNECTED', async (data) => {
+      // This is nullable
       data.player = await this.getPlayerBySteamID(data.steamID);
-      if (data.player) data.player.suffix = data.playerSuffix;
+      if (data.player) {
+        data.player.suffix = data.playerSuffix;
+        this.server.players[data.steamID] = {
+          ...data.player,
+          controller: data.controller
+        };
+      }
+      // We still want to set the controller into the steamid.
+      // Skeleton player till players updated hits?
+      // This is a data race for plugins AND the players Updated loop depending where the Nodjs eventloop is at the time.
+      // Perhaps set defaults for pawn/team/squad/name?
+      // should maybe gaurd this.server.players in some way, since now multiple things can write.
+      if (!data.player) {
+        this.servers.players[data.steamID] = {
+          controller: data.controller,
+          steamID: data.steamID,
+          playerID: null,
+          teamID: null,
+          squadID: null,
+          pawn: null
+        };
+      }
 
       delete data.steamID;
       delete data.playerSuffix;
 
-      this.emit('PLAYER_CONNECTED', data);
+      this.emitProxy('PLAYER_CONNECTED', data);
     });
 
     this.logParser.on('PLAYER_DISCONNECTED', async (data) => {
@@ -208,7 +230,7 @@ export default class SquadServer extends EventEmitter {
 
       delete data.steamID;
 
-      this.emit('PLAYER_DISCONNECTED', data);
+      this.emitProxy('PLAYER_DISCONNECTED', data);
     });
 
     this.logParser.on('PLAYER_DAMAGED', async (data) => {
@@ -223,7 +245,7 @@ export default class SquadServer extends EventEmitter {
       delete data.victimName;
       delete data.attackerName;
 
-      this.emit('PLAYER_DAMAGED', data);
+      this.emitProxy('PLAYER_DAMAGED', data);
     });
 
     this.logParser.on('PLAYER_WOUNDED', async (data) => {
@@ -238,7 +260,7 @@ export default class SquadServer extends EventEmitter {
       delete data.victimName;
       delete data.attackerName;
 
-      this.emit('PLAYER_WOUNDED', data);
+      this.emitProxy('PLAYER_WOUNDED', data);
       if (data.teamkill) this.emit('TEAMKILL', data);
     });
 
@@ -253,7 +275,7 @@ export default class SquadServer extends EventEmitter {
       delete data.victimName;
       delete data.attackerName;
 
-      this.emit('PLAYER_DIED', data);
+      this.emitProxy('PLAYER_DIED', data);
     });
 
     this.logParser.on('PLAYER_REVIVED', async (data) => {
@@ -271,10 +293,13 @@ export default class SquadServer extends EventEmitter {
     this.logParser.on('PLAYER_POSSESS', async (data) => {
       data.player = await this.getPlayerByNameSuffix(data.playerSuffix);
       if (data.player) data.player.possessClassname = data.possessClassname;
-
+      this.server.players[data.player.steamID] = {
+        ...data.player,
+        pawn: data.pawn
+      };
       delete data.playerSuffix;
 
-      this.emit('PLAYER_POSSESS', data);
+      this.emitProxy('PLAYER_POSSESS', data);
     });
 
     this.logParser.on('PLAYER_UNPOSSESS', async (data) => {
@@ -282,21 +307,20 @@ export default class SquadServer extends EventEmitter {
 
       delete data.playerSuffix;
 
-      this.emit('PLAYER_UNPOSSESS', data);
+      this.emitProxy('PLAYER_UNPOSSESS', data);
     });
 
     this.logParser.on('TICK_RATE', (data) => {
-      this.emit('TICK_RATE', data);
+      this.emitProxy('TICK_RATE', data);
     });
 
     this.logParser.on('SQUAD_CREATED', async (data) => {
+      data.player = await this.getPlayerBySteamID(data.playerSteamID, true);
+      delete data.playerName;
+      delete data.playerSteamID;
+      delete data.squadID;
 
-      data.player = await this.getPlayerBySteamID(data.playerSteamID, true)
-      delete data.playerName
-      delete data.playerSteamID
-      delete data.squadID
-
-      this.emit('SQUAD_CREATED', data);
+      this.emitProxy('SQUAD_CREATED', data);
     });
   }
 
@@ -512,6 +536,12 @@ export default class SquadServer extends EventEmitter {
     return null;
   }
 
+  emitProxy(event, data) {
+    if (!this.logparser.syncData) {
+      this.emit(event, data);
+    }
+  }
+
   async getSquadByID(teamID, squadID) {
     if (squadID === null) return null;
     return this.getSquadByCondition(
@@ -529,6 +559,43 @@ export default class SquadServer extends EventEmitter {
 
   async getPlayerByNameSuffix(suffix, forceUpdate) {
     return this.getPlayerByCondition((player) => player.suffix === suffix, forceUpdate, false);
+  }
+
+  async getPlayerByPawn(pawn, forceUpdate) {
+    return this.getPlayerByCondition((player) => player.pawn === pawn, forceUpdate, false);
+  }
+
+  async getPlayerByController(controller, forceUpdate) {
+    return this.getPlayerByCondition(
+      (player) => player.controller === controller,
+      forceUpdate,
+      false
+    );
+  }
+
+  /*
+  This needs work, however, we need a generic way to get players in ambigous cases
+  If we fail all tests, fall through on Suffix returning a value or null.
+
+  Ideally, we still use specific calls where possible to avoid this mess
+
+  Need to handle retry cases?
+  */
+  async getPlayer(info, forceUpdate) {
+    if (/([0-9]{17})/.test(info)) {
+      return this.getPlayerBySteamID(info, forceUpdate);
+    }
+    if (info.startsWith('BP_PlayerController_C_')) {
+      return this.getPlayerByController(info, forceUpdate);
+    }
+    if (info.startsWith('BP_')) {
+      return this.getPlayerByPawn(info, forceUpdate);
+    }
+    const match = await this.getPlayerByName(info, forceUpdate);
+    if (match) {
+      return match;
+    }
+    return await this.getPlayerBySuffix(info, forceUpdate);
   }
 
   async pingSquadJSAPI() {
