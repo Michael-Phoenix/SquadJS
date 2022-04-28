@@ -1,5 +1,6 @@
 export default {
-  regex: /^\[([0-9.:-]+)]\[([ 0-9]*)]LogSquadTrace: \[DedicatedServer](?:ASQPlayerController::)?OnUnPossess\(\): PC=(.+)/,
+  regex:
+    /^\[([0-9.:-]+)]\[([ 0-9]*)]LogSquadTrace: \[DedicatedServer](?:ASQPlayerController::)?OnUnPossess\(\): PC=(.+)/,
   onMatch: (args, logParser) => {
     const data = {
       raw: args[0],
@@ -8,7 +9,12 @@ export default {
       playerSuffix: args[3],
       switchPossess: args[3] in logParser.eventStore && logParser.eventStore[args[3]] === args[2]
     };
-
+    if (args[3].includes('current health value')) {
+      return;
+    }
+    if (data.playerSuffix.startsWith('BP_PlayerController')) {
+      data.playerSuffix = logParser.getPlayerFromController(data.playerSuffix).suffix;
+    }
     delete logParser.eventStore[args[3]];
 
     logParser.emit('PLAYER_UNPOSSESS', data);

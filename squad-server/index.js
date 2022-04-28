@@ -15,6 +15,9 @@ import { SQUADJS_VERSION } from './utils/constants.js';
 
 import fetchAdminLists from './utils/admin-lists.js';
 
+import fs from 'fs';
+import moment from 'moment';
+
 export default class SquadServer extends EventEmitter {
   constructor(options = {}) {
     super();
@@ -59,9 +62,13 @@ export default class SquadServer extends EventEmitter {
     this.pingSquadJSAPI = this.pingSquadJSAPI.bind(this);
     this.pingSquadJSAPIInterval = 5 * 60 * 1000;
     this.pingSquadJSAPITimeout = null;
+
+    this.syncData = null;
   }
 
   async watch() {
+    this.syncData = await this.getSyncLine();
+
     Logger.verbose(
       'SquadServer',
       1,
@@ -194,30 +201,43 @@ export default class SquadServer extends EventEmitter {
     });
 
     this.logParser.on('PLAYER_CONNECTED', async (data) => {
-      // This is nullable
+      // This is nullable, should we attempt a force update?
       data.player = await this.getPlayerBySteamID(data.steamID);
+
+      // Common on Reconnection within a short window
       if (data.player) {
-        data.player.suffix = data.playerSuffix;
-        this.server.players[data.steamID] = {
+        // Refresh Player
+        const player = {
           ...data.player,
-          controller: data.controller
-        };
-      }
-      // We still want to set the controller into the steamid.
-      // Skeleton player till players updated hits?
-      // This is a data race for plugins AND the players Updated loop depending where the Nodjs eventloop is at the time.
-      // Perhaps set defaults for pawn/team/squad/name?
-      // should maybe gaurd this.server.players in some way, since now multiple things can write.
-      if (!data.player) {
-        this.servers.players[data.steamID] = {
+          suffix: data.playerSuffix,
           controller: data.controller,
-          steamID: data.steamID,
-          playerID: null,
-          teamID: null,
-          squadID: null,
-          pawn: null
+          steamID: data.steamID
         };
+        // Remove Old Player
+        this.players = this.players.filter((player) => player.steamID !== data.steamID);
+        // Add refreshed Data
+        this.players.push(player);
+
+        delete data.steamID;
+        delete data.playerSuffix;
+
+        this.emitProxy('PLAYER_CONNECTED', data);
+
+        return;
       }
+      // If we fall through here, we need a skeleton player
+
+      data.player = {
+        // name: 'placeholder',
+        suffix: data.playerSuffix,
+        controller: data.controller,
+        steamID: data.steamID
+        // playerID: 99999, //Error Value
+        // teamID: 99999, //Error Value
+        // squadID: null,
+      };
+
+      this.players.push(data.player);
 
       delete data.steamID;
       delete data.playerSuffix;
@@ -537,8 +557,24 @@ export default class SquadServer extends EventEmitter {
   }
 
   emitProxy(event, data) {
-    if (!this.logparser.syncData) {
+    // newer Log File
+    if (this.syncData[1] < data.time) {
+      this.syncData = null;
+      this.logParser.reapEventStore();
+    }
+
+    // Update syncData and emit
+    if (!this.syncData) {
+      this.saveSyncLine(data.raw);
       this.emit(event, data);
+
+      return;
+    }
+
+    // Exact Match
+    if (this.syncData[0] === data.raw) {
+      this.syncData = null;
+      this.logParser.reapEventStore();
     }
   }
 
@@ -559,10 +595,6 @@ export default class SquadServer extends EventEmitter {
 
   async getPlayerByNameSuffix(suffix, forceUpdate) {
     return this.getPlayerByCondition((player) => player.suffix === suffix, forceUpdate, false);
-  }
-
-  async getPlayerByPawn(pawn, forceUpdate) {
-    return this.getPlayerByCondition((player) => player.pawn === pawn, forceUpdate, false);
   }
 
   async getPlayerByController(controller, forceUpdate) {
@@ -587,9 +619,6 @@ export default class SquadServer extends EventEmitter {
     }
     if (info.startsWith('BP_PlayerController_C_')) {
       return this.getPlayerByController(info, forceUpdate);
-    }
-    if (info.startsWith('BP_')) {
-      return this.getPlayerByPawn(info, forceUpdate);
     }
     const match = await this.getPlayerByName(info, forceUpdate);
     if (match) {
@@ -646,5 +675,28 @@ export default class SquadServer extends EventEmitter {
     }
 
     this.pingSquadJSAPITimeout = setTimeout(this.pingSquadJSAPI, this.pingSquadJSAPIInterval);
+  }
+
+  async getSyncLine() {
+    if (!fs.existsSync('syncData.tmp')) {
+      Logger.verbose('LogParser', 0, 'No Sync file found...');
+      return;
+    }
+    Logger.verbose('LogParser', 0, 'Loading Sync File...');
+    let line = fs.readFileSync('syncData.tmp', 'utf8');
+
+    line = line.match(/^\[([0-9.:-]+)]/);
+
+    line = [line.input, moment.utc(line[1], 'YYYY.MM.DD-hh.mm.ss:SSS').toDate()];
+
+    return line;
+  }
+
+  saveSyncLine(line) {
+    Logger.verbose('LogParser', 4, 'Saving Sync File...');
+
+    fs.writeFileSync('syncData.tmp', line, (err) => {
+      if (err) throw err;
+    });
   }
 }

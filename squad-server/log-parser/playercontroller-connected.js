@@ -8,7 +8,9 @@ export default {
       chainID: args[2],
       controller: args[3]
     };
+    // Third step in player connected
     logParser.eventStore['player-controller'] = args[3];
+
     logParser.emit('PLAYER_CONTROLLER_CONNECTED', data);
   }
 };

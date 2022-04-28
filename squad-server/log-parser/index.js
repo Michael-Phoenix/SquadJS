@@ -14,9 +14,12 @@ import PlayerUnPossess from './player-un-possess.js';
 import PlayerWounded from './player-wounded.js';
 import RoundWinner from './round-winner.js';
 import ServerTickRate from './server-tick-rate.js';
-import SteamIDConnected from './steamid-connected.js';
 import SquadCreated from './squad-created.js';
-
+import traceDamage from './trace-damage.js';
+import playerRespawned from './player-respawn.js';
+import clientConnected from './client-connected.js';
+import clientLogin from './client-login.js';
+import pendingConnectionDestroyed from './pending-connection-destroyed.js';
 export default class SquadLogParser extends LogParser {
   constructor(options) {
     super('SquadGame.log', options);
@@ -38,8 +41,12 @@ export default class SquadLogParser extends LogParser {
       PlayerWounded,
       RoundWinner,
       ServerTickRate,
-      SteamIDConnected,
-      SquadCreated
+      SquadCreated,
+      traceDamage,
+      playerRespawned,
+      clientConnected,
+      clientLogin,
+      pendingConnectionDestroyed
     ];
   }
 }
