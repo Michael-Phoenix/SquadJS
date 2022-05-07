@@ -313,7 +313,7 @@ export default class SquadServer extends EventEmitter {
       delete data.attackerName;
       delete data.reviverName;
 
-      this.emitProx('PLAYER_REVIVED', data);
+      this.emitProxy('PLAYER_REVIVED', data);
     });
 
     this.logParser.on('PLAYER_POSSESS', async (data) => {
