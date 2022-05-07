@@ -580,9 +580,9 @@ export default class SquadServer extends EventEmitter {
     }
 
     // Exact Match
-    if (this.syncData[0] === data.raw) {
+    if (this.syncData && this.syncData[0] === data.raw) {
       this.syncData = null;
-      this.logParser.reapEventStore();
+      //this.logParser.reapEventStore();
     }
   }
 
