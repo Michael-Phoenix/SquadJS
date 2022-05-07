@@ -216,7 +216,7 @@ export default class Rcon extends EventEmitter {
       this.client.once('connect', onConnect);
       this.client.once('error', onError);
 
-      this.client.connect(this.port, this.host, this.localAddress);
+      this.client.connect({"port" : this.port, "host" : this.host, "localAddress" : this.localAddress});
     });
   }
 
