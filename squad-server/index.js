@@ -313,10 +313,10 @@ export default class SquadServer extends EventEmitter {
     this.logParser.on('PLAYER_POSSESS', async (data) => {
       data.player = await this.getPlayerByNameSuffix(data.playerSuffix);
       if (data.player) data.player.possessClassname = data.possessClassname;
-      this.server.players[data.player.steamID] = {
+      /*this.players[data.player.steamID] = {
         ...data.player,
         pawn: data.pawn
-      };
+      };*/
       delete data.playerSuffix;
 
       this.emitProxy('PLAYER_POSSESS', data);
