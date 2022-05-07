@@ -533,7 +533,7 @@ export default class SquadServer extends EventEmitter {
       matches = this.players.filter(condition);
       if (matches.length === 1) return matches[0];
 
-      if (!retry) return null;
+      if (!retry || this.syncData) return null;
     }
 
     await this.updatePlayerList();
