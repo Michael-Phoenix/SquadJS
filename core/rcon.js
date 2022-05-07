@@ -18,11 +18,12 @@ export default class Rcon extends EventEmitter {
     super();
 
     // store config
-    for (const option of ['host', 'port', 'password'])
+    for (const option of ['host', 'port', 'password', 'localAddress'])
       if (!(option in options)) throw new Error(`${option} must be specified.`);
 
     this.host = options.host;
     this.port = options.port;
+    this.localAddress = options.localAddress;
     this.password = options.password;
     this.autoReconnectDelay = options.autoReconnectDelay || 5000;
 
@@ -215,7 +216,7 @@ export default class Rcon extends EventEmitter {
       this.client.once('connect', onConnect);
       this.client.once('error', onError);
 
-      this.client.connect(this.port, this.host);
+      this.client.connect(this.port, this.host, this.localAddress);
     });
   }
 

@@ -94,6 +94,7 @@ export default class SquadServer extends EventEmitter {
     this.rcon = new Rcon({
       host: this.options.rconHost || this.options.host,
       port: this.options.rconPort,
+      localAddress: this.options.rconLocalAddress,
       password: this.options.rconPassword,
       autoReconnectInterval: this.options.rconAutoReconnectInterval
     });
