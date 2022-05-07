@@ -185,13 +185,13 @@ export default class Rcon extends EventEmitter {
 
   connect() {
     return new Promise((resolve, reject) => {
-      Logger.verbose('RCON', 1, `Connecting to: ${this.host}:${this.port}`);
+      Logger.verbose('RCON', 1, `Connecting from ${this.localAddress} to: ${this.host}:${this.port}`);
 
       const onConnect = async () => {
         this.client.removeListener('error', onError);
         this.connected = true;
 
-        Logger.verbose('RCON', 1, `Connected to: ${this.host}:${this.port}`);
+        Logger.verbose('RCON', 1, `Connected from ${this.localAddress} to: ${this.host}:${this.port}`);
 
         try {
           // connected successfully, now try auth...
@@ -208,7 +208,7 @@ export default class Rcon extends EventEmitter {
       const onError = (err) => {
         this.client.removeListener('connect', onConnect);
 
-        Logger.verbose('RCON', 1, `Failed to connect to: ${this.host}:${this.port}`, err);
+        Logger.verbose('RCON', 1, `Failed to connect from ${this.localAddress} to: ${this.host}:${this.port}`, err);
 
         reject(err);
       };
