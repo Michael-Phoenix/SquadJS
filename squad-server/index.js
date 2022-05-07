@@ -566,9 +566,9 @@ export default class SquadServer extends EventEmitter {
 
   emitProxy(event, data) {
     // newer Log File
-    if (this.syncData[1] < data.time) {
+    if (this.syncData && this.syncData[1] < data.time) {
       this.syncData = null;
-      this.logParser.reapEventStore();
+      //this.logParser.reapEventStore();
     }
 
     // Update syncData and emit
