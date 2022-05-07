@@ -1,8 +1,9 @@
 export default {
-  regex: /^\[([0-9.:-]+)]\[([ 0-9]*)]LogSquadTrace: \[DedicatedServer](?:ASQSoldier::)?Die\(\): Player:(.+) KillingDamage=(?:-)*([0-9.]+) from ([A-z_0-9]+) caused by ([A-z_0-9]+)_C/,
+  regex:
+    /^\[([0-9.:-]+)]\[([ 0-9]*)]LogSquadTrace: \[DedicatedServer](?:ASQSoldier::)?Die\(\): Player:(.+) KillingDamage=(?:-)*([0-9.]+) from ([A-z_0-9]+) caused by (([A-z_0-9]+)_C_[0-9]+)/,
   onMatch: (args, logParser) => {
     const data = {
-      ...logParser.eventStore[args[3]],
+      ...logParser.eventStore.matchData[args[3]],
       raw: args[0],
       time: args[1],
       woundTime: args[1],
@@ -10,10 +11,14 @@ export default {
       victimName: args[3],
       damage: parseFloat(args[4]),
       attackerPlayerController: args[5],
-      weapon: args[6]
+      weapon: args[7]
     };
 
-    logParser.eventStore[args[3]] = data;
+    if (data.victimName !== 'nullptr') {
+      delete logParser.eventStore.matchData[args[3]];
+    }
+
+    // logParser.eventStore[args[3]] = data;
 
     logParser.emit('PLAYER_DIED', data);
   }

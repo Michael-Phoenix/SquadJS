@@ -17,6 +17,7 @@ export default {
 
     delete logParser.eventStore.WON;
 
+    logParser.reapEventStore();
     logParser.emit('NEW_GAME', data);
   }
 };

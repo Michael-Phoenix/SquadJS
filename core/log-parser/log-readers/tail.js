@@ -7,7 +7,7 @@ export default class TailLogReader {
     if (!('logDir' in options)) throw new Error(`logDir must be specified.`);
 
     this.reader = new TailModule.Tail(path.join(options.logDir, options.filename), {
-      useWatchFile: true
+      fromBeginning: true
     });
 
     if (typeof queueLine !== 'function')
@@ -17,7 +17,8 @@ export default class TailLogReader {
   }
 
   async watch() {
-    this.reader.watch();
+    // this.reader.unwatch()
+    // this.reader.watch();
   }
 
   async unwatch() {

@@ -15,6 +15,9 @@ import { SQUADJS_VERSION } from './utils/constants.js';
 
 import fetchAdminLists from './utils/admin-lists.js';
 
+import fs from 'fs';
+import moment from 'moment';
+
 export default class SquadServer extends EventEmitter {
   constructor(options = {}) {
     super();
@@ -59,9 +62,13 @@ export default class SquadServer extends EventEmitter {
     this.pingSquadJSAPI = this.pingSquadJSAPI.bind(this);
     this.pingSquadJSAPIInterval = 5 * 60 * 1000;
     this.pingSquadJSAPITimeout = null;
+
+    this.syncData = null;
   }
 
   async watch() {
+    this.syncData = await this.getSyncLine();
+
     Logger.verbose(
       'SquadServer',
       1,
@@ -173,7 +180,7 @@ export default class SquadServer extends EventEmitter {
     );
 
     this.logParser.on('ADMIN_BROADCAST', (data) => {
-      this.emit('ADMIN_BROADCAST', data);
+      this.emitProxy('ADMIN_BROADCAST', data);
     });
 
     this.logParser.on('DEPLOYABLE_DAMAGED', async (data) => {
@@ -181,7 +188,7 @@ export default class SquadServer extends EventEmitter {
 
       delete data.playerSuffix;
 
-      this.emit('DEPLOYABLE_DAMAGED', data);
+      this.emitProxy('DEPLOYABLE_DAMAGED', data);
     });
 
     this.logParser.on('NEW_GAME', async (data) => {
@@ -191,18 +198,53 @@ export default class SquadServer extends EventEmitter {
       this.layerHistory = this.layerHistory.slice(0, this.layerHistoryMaxLength);
 
       this.currentLayer = data.layer;
-      this.emit('NEW_GAME', data);
+      this.emitProxy('NEW_GAME', data);
     });
 
     this.logParser.on('PLAYER_CONNECTED', async (data) => {
-      data.player = await this.getPlayerBySteamID(data.steamID, true);
-      if (data.player) data.player.suffix = data.playerSuffix;
-      if (data.player) data.player.controller = data.playerController;
+      // This is nullable, should we attempt a force update?
+      data.player = await this.getPlayerBySteamID(data.steamID);
+
+      // Common on Reconnection within a short window
+      if (data.player) {
+        // Refresh Player
+        const player = {
+          ...data.player,
+          suffix: data.playerSuffix,
+          controller: data.controller,
+          steamID: data.steamID
+        };
+        // Remove Old Player
+        this.players = this.players.filter((player) => player.steamID !== data.steamID);
+        // Add refreshed Data
+        this.players.push(player);
+
+        delete data.steamID;
+        delete data.playerSuffix;
+
+        this.emitProxy('PLAYER_CONNECTED', data);
+
+        return;
+      }
+      // If we fall through here, we need a skeleton player
+
+      data.player = {
+        // name: 'placeholder',
+        suffix: data.playerSuffix,
+        controller: data.controller,
+        steamID: data.steamID
+        // playerID: 99999, //Error Value
+        // teamID: 99999, //Error Value
+        // squadID: null,
+      };
+
+      this.players.push(data.player);
+
       delete data.steamID;
       delete data.playerSuffix;
       delete data.playerController;
 
-      this.emit('PLAYER_CONNECTED', data);
+      this.emitProxy('PLAYER_CONNECTED', data);
     });
 
     this.logParser.on('PLAYER_DISCONNECTED', async (data) => {
@@ -210,7 +252,7 @@ export default class SquadServer extends EventEmitter {
 
       delete data.steamID;
 
-      this.emit('PLAYER_DISCONNECTED', data);
+      this.emitProxy('PLAYER_DISCONNECTED', data);
     });
 
     this.logParser.on('PLAYER_DAMAGED', async (data) => {
@@ -225,7 +267,7 @@ export default class SquadServer extends EventEmitter {
       delete data.victimName;
       delete data.attackerName;
 
-      this.emit('PLAYER_DAMAGED', data);
+      this.emitProxy('PLAYER_DAMAGED', data);
     });
 
     this.logParser.on('PLAYER_WOUNDED', async (data) => {
@@ -244,7 +286,7 @@ export default class SquadServer extends EventEmitter {
       delete data.victimName;
       delete data.attackerName;
 
-      this.emit('PLAYER_WOUNDED', data);
+      this.emitProxy('PLAYER_WOUNDED', data);
       if (data.teamkill) this.emit('TEAMKILL', data);
     });
 
@@ -261,7 +303,7 @@ export default class SquadServer extends EventEmitter {
       delete data.victimName;
       delete data.attackerName;
 
-      this.emit('PLAYER_DIED', data);
+      this.emitProxy('PLAYER_DIED', data);
     });
 
     this.logParser.on('PLAYER_REVIVED', async (data) => {
@@ -279,10 +321,13 @@ export default class SquadServer extends EventEmitter {
     this.logParser.on('PLAYER_POSSESS', async (data) => {
       data.player = await this.getPlayerByNameSuffix(data.playerSuffix);
       if (data.player) data.player.possessClassname = data.possessClassname;
-
+      this.server.players[data.player.steamID] = {
+        ...data.player,
+        pawn: data.pawn
+      };
       delete data.playerSuffix;
 
-      this.emit('PLAYER_POSSESS', data);
+      this.emitProxy('PLAYER_POSSESS', data);
     });
 
     this.logParser.on('PLAYER_UNPOSSESS', async (data) => {
@@ -290,21 +335,20 @@ export default class SquadServer extends EventEmitter {
 
       delete data.playerSuffix;
 
-      this.emit('PLAYER_UNPOSSESS', data);
+      this.emitProxy('PLAYER_UNPOSSESS', data);
     });
 
     this.logParser.on('TICK_RATE', (data) => {
-      this.emit('TICK_RATE', data);
+      this.emitProxy('TICK_RATE', data);
     });
 
     this.logParser.on('SQUAD_CREATED', async (data) => {
+      data.player = await this.getPlayerBySteamID(data.playerSteamID, true);
+      delete data.playerName;
+      delete data.playerSteamID;
+      delete data.squadID;
 
-      data.player = await this.getPlayerBySteamID(data.playerSteamID, true)
-      delete data.playerName
-      delete data.playerSteamID
-      delete data.squadID
-
-      this.emit('SQUAD_CREATED', data);
+      this.emitProxy('SQUAD_CREATED', data);
     });
   }
 
@@ -520,6 +564,28 @@ export default class SquadServer extends EventEmitter {
     return null;
   }
 
+  emitProxy(event, data) {
+    // newer Log File
+    if (this.syncData[1] < data.time) {
+      this.syncData = null;
+      this.logParser.reapEventStore();
+    }
+
+    // Update syncData and emit
+    if (!this.syncData) {
+      this.saveSyncLine(data.raw);
+      this.emit(event, data);
+
+      return;
+    }
+
+    // Exact Match
+    if (this.syncData[0] === data.raw) {
+      this.syncData = null;
+      this.logParser.reapEventStore();
+    }
+  }
+
   async getSquadByID(teamID, squadID) {
     if (squadID === null) return null;
     return this.getSquadByCondition(
@@ -539,8 +605,34 @@ export default class SquadServer extends EventEmitter {
     return this.getPlayerByCondition((player) => player.suffix === suffix, forceUpdate, false);
   }
 
-  async getPlayerByPlayerController(playerController, forceUpdate) {
-    return this.getPlayerByCondition((player) => player.controller === playerController, forceUpdate, false);
+  async getPlayerByController(controller, forceUpdate) {
+    return this.getPlayerByCondition(
+      (player) => player.controller === controller,
+      forceUpdate,
+      false
+    );
+  }
+
+  /*
+  This needs work, however, we need a generic way to get players in ambigous cases
+  If we fail all tests, fall through on Suffix returning a value or null.
+
+  Ideally, we still use specific calls where possible to avoid this mess
+
+  Need to handle retry cases?
+  */
+  async getPlayer(info, forceUpdate) {
+    if (/([0-9]{17})/.test(info)) {
+      return this.getPlayerBySteamID(info, forceUpdate);
+    }
+    if (info.startsWith('BP_PlayerController_C_')) {
+      return this.getPlayerByController(info, forceUpdate);
+    }
+    const match = await this.getPlayerByName(info, forceUpdate);
+    if (match) {
+      return match;
+    }
+    return await this.getPlayerBySuffix(info, forceUpdate);
   }
 
   async pingSquadJSAPI() {
@@ -591,5 +683,28 @@ export default class SquadServer extends EventEmitter {
     }
 
     this.pingSquadJSAPITimeout = setTimeout(this.pingSquadJSAPI, this.pingSquadJSAPIInterval);
+  }
+
+  async getSyncLine() {
+    if (!fs.existsSync('syncData.tmp')) {
+      Logger.verbose('LogParser', 0, 'No Sync file found...');
+      return;
+    }
+    Logger.verbose('LogParser', 0, 'Loading Sync File...');
+    let line = fs.readFileSync('syncData.tmp', 'utf8');
+
+    line = line.match(/^\[([0-9.:-]+)]/);
+
+    line = [line.input, moment.utc(line[1], 'YYYY.MM.DD-hh.mm.ss:SSS').toDate()];
+
+    return line;
+  }
+
+  saveSyncLine(line) {
+    Logger.verbose('LogParser', 4, 'Saving Sync File...');
+
+    fs.writeFileSync('syncData.tmp', line, (err) => {
+      if (err) throw err;
+    });
   }
 }
