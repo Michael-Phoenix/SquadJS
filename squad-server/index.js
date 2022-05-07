@@ -282,7 +282,7 @@ export default class SquadServer extends EventEmitter {
       delete data.attackerName;
 
       this.emitProxy('PLAYER_WOUNDED', data);
-      if (data.teamkill) this.emit('TEAMKILL', data);
+      if (data.teamkill) this.emitProxy('TEAMKILL', data);
     });
 
     this.logParser.on('PLAYER_DIED', async (data) => {
@@ -313,7 +313,7 @@ export default class SquadServer extends EventEmitter {
       delete data.attackerName;
       delete data.reviverName;
 
-      this.emit('PLAYER_REVIVED', data);
+      this.emitProx('PLAYER_REVIVED', data);
     });
 
     this.logParser.on('PLAYER_POSSESS', async (data) => {
