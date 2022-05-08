@@ -41,11 +41,16 @@ export default class BB_DiscordRoundEnd extends DiscordBasePlugin {
   }
 
   async onNewGame(info) {
+    const winnerText = info.winner?info.winner:'Could not be determined.';
     await this.sendDiscordMessage({
       embed: {
         title: 'Round Ended',
         color: this.options.color,
         fields: [
+          {
+            name: 'Winner'
+            value: `${winnerText}`
+          },
           {
             name: 'Last Layer',
             value: `${this.server.layerHistory[1].layer.name}`,
@@ -55,11 +60,8 @@ export default class BB_DiscordRoundEnd extends DiscordBasePlugin {
             name: 'Next Layer',
             value: `${this.server.layerHistory[0].layer.name}`,
             inline: true
-          },
-          {
-            name: 'Winner'
-            value: `${info.winner?info.winner:'Could not be determined.'}`
           }
+
         ],
         timestamp: info.time.toISOString()
       }
