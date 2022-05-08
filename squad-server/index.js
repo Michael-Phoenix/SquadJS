@@ -271,6 +271,7 @@ export default class SquadServer extends EventEmitter {
     this.logParser.on('PLAYER_WOUNDED', async (data) => {
       data.victim = await this.getPlayerByName(data.victimName);
       data.attacker = await this.getPlayerByName(data.attackerName);
+      if(!data.attacker && data.attackerPlayerController !== null) data.attacker = await this.getPlayerByController(data.attackerPlayerController);
 
       if (data.victim && data.attacker)
         data.teamkill =
@@ -523,7 +524,7 @@ export default class SquadServer extends EventEmitter {
   async getPlayerByCondition(condition, forceUpdate = false, retry = true) {
     let matches;
 
-    if (!forceUpdate) {
+    if (!forceUpdate || this.syncData) {
       matches = this.players.filter(condition);
       if (matches.length === 1) return matches[0];
 
