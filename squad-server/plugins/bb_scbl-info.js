@@ -104,7 +104,7 @@ export default class BB_SCBLInfo extends DiscordBasePlugin {
         return;
       }
       //Last Reputation change
-      daysSinceLastRepChange = (Date.now() - Date.parse(data.steamUser.lastRefreshedReputationRank).getTime()) / (1000 * 3600 * 24);
+      daysSinceLastRepChange = (Date.now() - Date.parse(data.steamUser.lastRefreshedReputationRank)) / (1000 * 3600 * 24);
       await this.sendDiscordMessage({
         embed: {
           title: `${info.player.name} is a potentially harmful player!`,
