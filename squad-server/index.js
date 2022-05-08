@@ -275,7 +275,7 @@ export default class SquadServer extends EventEmitter {
       data.victim = await this.getPlayerByName(data.victimName);
       //if(!data.victim) data.victim = await this.getPlayerByPlayerController(data.victimName);
       data.attacker = await this.getPlayerByName(data.attackerName);
-      if(!data.attacker && data.attackerPlayerController !== null) data.attacker = await this.getPlayerByPlayerController(data.attackerPlayerController);
+      if(!data.attacker && data.attackerPlayerController !== null) data.attacker = await this.getPlayerByController(data.attackerPlayerController);
 
       Logger.verbose('LogParser', 3, `Victim Name: ${data.victimName}, Attacker Name: ${data.attackerName}, FoundVictim Name: ${data.victim?.name}, FoundAttacker Name: ${data.attacker?.name}`);
       if (data.victim && data.attacker)
@@ -287,13 +287,13 @@ export default class SquadServer extends EventEmitter {
       delete data.attackerName;
 
       this.emitProxy('PLAYER_WOUNDED', data);
-      if (data.teamkill) this.emit('TEAMKILL', data);
+      if (data.teamkill) this.emitProxy('TEAMKILL', data);
     });
 
     this.logParser.on('PLAYER_DIED', async (data) => {
       data.victim = await this.getPlayerByName(data.victimName);
       //if(!data.victim) data.victim = await this.getPlayerByPlayerController(data.victimName);
-      if(!data.attacker) data.attacker = await this.getPlayerByPlayerController(data.attackerPlayerController);
+      if(!data.attacker) data.attacker = await this.getPlayerByController(data.attackerPlayerController);
 
       if (data.victim && data.attacker)
         data.teamkill =
@@ -315,7 +315,7 @@ export default class SquadServer extends EventEmitter {
       delete data.attackerName;
       delete data.reviverName;
 
-      this.emit('PLAYER_REVIVED', data);
+      this.emitProxy('PLAYER_REVIVED', data);
     });
 
     this.logParser.on('PLAYER_POSSESS', async (data) => {
@@ -531,11 +531,11 @@ export default class SquadServer extends EventEmitter {
   async getPlayerByCondition(condition, forceUpdate = false, retry = true) {
     let matches;
 
-    if (!forceUpdate) {
+    if (!forceUpdate || this.syncData) {
       matches = this.players.filter(condition);
       if (matches.length === 1) return matches[0];
 
-      if (!retry) return null;
+      if (!retry || this.syncData) return null;
     }
 
     await this.updatePlayerList();
