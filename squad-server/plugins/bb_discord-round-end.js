@@ -48,7 +48,7 @@ export default class BB_DiscordRoundEnd extends DiscordBasePlugin {
         color: this.options.color,
         fields: [
           {
-            name: 'Winner'
+            name: 'Winner',
             value: `${winnerText}`
           },
           {
