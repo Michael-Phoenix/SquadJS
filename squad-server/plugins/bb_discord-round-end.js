@@ -50,12 +50,12 @@ export default class BB_DiscordRoundEnd extends DiscordBasePlugin {
             name: 'Last Layer',
             value: `${this.server.layerHistory[1].layer.name}`,
             inline: true
-          }
+          },
           {
             name: 'Next Layer',
             value: `${this.server.layerHistory[0].layer.name}`,
             inline: true
-          }
+          },
           {
             name: 'Winner'
             value: `${info.winner?info.winner:'Could not be determined.'}`
