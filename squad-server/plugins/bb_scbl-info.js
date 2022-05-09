@@ -104,7 +104,15 @@ export default class BB_SCBLInfo extends DiscordBasePlugin {
         return;
       }
       //Last Reputation change
-      daysSinceLastRepChange = (Date.now() - Date.parse(data.steamUser.lastRefreshedReputationRank)) / (1000 * 3600 * 24);
+      this.verbose(
+        1,
+        `Player ${info.player.name} (LastRefreshed: ${data.steamUser.lastRefreshedReputationPoints})`
+      );
+      daysSinceLastRepChange = (Date.now() - Date.parse(data.steamUser.lastRefreshedReputationPoints)) / (1000 * 3600 * 24);
+      this.verbose(
+        1,
+        `Player ${info.player.name} (Calculated days since refresh: ${daysSinceLastRepChange}) `
+      );
       await this.sendDiscordMessage({
         embed: {
           title: `${info.player.name} is a potentially harmful player!`,
@@ -121,9 +129,7 @@ export default class BB_SCBLInfo extends DiscordBasePlugin {
           fields: [
             {
               name: 'Reputation Points',
-              value: `${data.steamUser.reputationPoints} (${
-                daysSinceLastRepChange
-              } Days since last change)`,
+              value: `${data.steamUser.reputationPoints} (${daysSinceLastRepChange} Days since last change)`,
               inline: true
             },
             {
