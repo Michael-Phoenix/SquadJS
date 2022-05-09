@@ -232,7 +232,6 @@ export default class SquadServer extends EventEmitter {
         //Added name = suffix for interim skeleton player so we have at least something to work with during SyncData
         name: data.playerSuffix,
         suffix: data.playerSuffix,
-        name: data.playerSuffix,
         controller: data.controller,
         steamID: data.steamID
         // playerID: 99999, //Error Value
