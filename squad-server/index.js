@@ -569,8 +569,7 @@ export default class SquadServer extends EventEmitter {
     // newer Log File
     if (this.syncData && this.syncData[1] < data.time) {
       this.syncData = null;
-      Logger.verbose('SyncData', 1, 'Found new Logfile. Will read all.');
-      //this.logParser.reapEventStore();
+      Logger.verbose('LogParser', 1, 'Found new Logfile. Will read all.');
     }
 
     // Update syncData and emit
@@ -584,8 +583,7 @@ export default class SquadServer extends EventEmitter {
     // Exact Match
     if (this.syncData && this.syncData[0] === data.raw) {
       this.syncData = null;
-      Logger.verbose('SyncData', 1, 'Reached syncData Line in Logfile. Will emit normal from here.');
-      //this.logParser.reapEventStore();
+      Logger.verbose('LogParser', 1, 'Reached syncData Line in Logfile. Will emit normal from here.');
     }
   }
 
