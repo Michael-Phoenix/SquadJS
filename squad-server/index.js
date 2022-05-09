@@ -101,6 +101,7 @@ export default class SquadServer extends EventEmitter {
     this.rcon = new Rcon({
       host: this.options.rconHost || this.options.host,
       port: this.options.rconPort,
+      localAddress: this.options.rconLocalAddress,
       password: this.options.rconPassword,
       autoReconnectInterval: this.options.rconAutoReconnectInterval
     });
@@ -231,6 +232,7 @@ export default class SquadServer extends EventEmitter {
         //Added name = suffix for interim skeleton player so we have at least something to work with during SyncData
         name: data.playerSuffix,
         suffix: data.playerSuffix,
+        name: data.playerSuffix,
         controller: data.controller,
         steamID: data.steamID
         // playerID: 99999, //Error Value
@@ -242,6 +244,7 @@ export default class SquadServer extends EventEmitter {
 
       delete data.steamID;
       delete data.playerSuffix;
+      delete data.playerController;
 
       this.emitProxy('PLAYER_CONNECTED', data);
     });
@@ -255,9 +258,9 @@ export default class SquadServer extends EventEmitter {
     });
 
     this.logParser.on('PLAYER_DAMAGED', async (data) => {
+
       data.victim = await this.getPlayerByName(data.victimName);
       data.attacker = await this.getPlayerByName(data.attackerName);
-
       if (data.victim && data.attacker)
         data.teamkill =
           data.victim.teamID === data.attacker.teamID &&
@@ -270,10 +273,13 @@ export default class SquadServer extends EventEmitter {
     });
 
     this.logParser.on('PLAYER_WOUNDED', async (data) => {
+      Logger.verbose('LogParser', 3, `PLAYER_WOUNDED was called.`);
       data.victim = await this.getPlayerByName(data.victimName);
+      //if(!data.victim) data.victim = await this.getPlayerByPlayerController(data.victimName);
       data.attacker = await this.getPlayerByName(data.attackerName);
       if(!data.attacker && data.attackerPlayerController !== null) data.attacker = await this.getPlayerByController(data.attackerPlayerController);
 
+      Logger.verbose('LogParser', 3, `Victim Name: ${data.victimName}, Attacker Name: ${data.attackerName}, FoundVictim Name: ${data.victim?.name}, FoundAttacker Name: ${data.attacker?.name}`);
       if (data.victim && data.attacker)
         data.teamkill =
           data.victim.teamID === data.attacker.teamID &&
@@ -564,6 +570,7 @@ export default class SquadServer extends EventEmitter {
     // newer Log File
     if (this.syncData && this.syncData[1] < data.time) {
       this.syncData = null;
+      Logger.verbose('SyncData', 1, 'Found new Logfile. Will read all.');
       //this.logParser.reapEventStore();
     }
 
@@ -578,6 +585,7 @@ export default class SquadServer extends EventEmitter {
     // Exact Match
     if (this.syncData && this.syncData[0] === data.raw) {
       this.syncData = null;
+      Logger.verbose('SyncData', 1, 'Reached syncData Line in Logfile. Will emit normal from here.');
       //this.logParser.reapEventStore();
     }
   }
