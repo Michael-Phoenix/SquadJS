@@ -101,6 +101,15 @@ export default class BB_SCBLInfo extends DiscordBasePlugin {
           2,
           `Player ${info.player.name} (Steam ID: ${info.player.steamID}) has a reputation below the threshold.`
         );
+        this.verbose(
+          1,
+          `Player ${info.player.name} (LastRefreshed: ${data.steamUser.lastRefreshedReputationPoints})`
+        );
+        const daysSinceLastRepChange = (Date.now() - Date.parse(data.steamUser.lastRefreshedReputationPoints)) / (1000 * 3600 * 24);
+        this.verbose(
+          1,
+          `Player ${info.player.name} (Calculated days since refresh: ${daysSinceLastRepChange}) `
+        );
         return;
       }
       //Last Reputation change
@@ -108,7 +117,7 @@ export default class BB_SCBLInfo extends DiscordBasePlugin {
         1,
         `Player ${info.player.name} (LastRefreshed: ${data.steamUser.lastRefreshedReputationPoints})`
       );
-      daysSinceLastRepChange = (Date.now() - Date.parse(data.steamUser.lastRefreshedReputationPoints)) / (1000 * 3600 * 24);
+      const daysSinceLastRepChange = (Date.now() - Date.parse(data.steamUser.lastRefreshedReputationPoints)) / (1000 * 3600 * 24);
       this.verbose(
         1,
         `Player ${info.player.name} (Calculated days since refresh: ${daysSinceLastRepChange}) `
