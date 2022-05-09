@@ -104,10 +104,6 @@ export default class BB_SCBLInfo extends DiscordBasePlugin {
         return;
       }
       //Last Reputation change
-      this.verbose(
-        1,
-        `Player ${info.player.name} (LastRefreshed: ${data.steamUser.lastRefreshedReputationPoints})`
-      );
       const daysSinceLastRepChange = Math.floor((Date.now() - Date.parse(data.steamUser.lastRefreshedReputationPoints)) / (1000 * 3600 * 24));
       this.verbose(
         1,
