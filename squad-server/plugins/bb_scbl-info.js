@@ -105,10 +105,6 @@ export default class BB_SCBLInfo extends DiscordBasePlugin {
       }
       //Last Reputation change
       const daysSinceLastRepChange = Math.floor((Date.now() - Date.parse(data.steamUser.lastRefreshedReputationPoints)) / (1000 * 3600 * 24));
-      this.verbose(
-        1,
-        `Player ${info.player.name} (Calculated days since refresh: ${daysSinceLastRepChange}) `
-      );
       await this.sendDiscordMessage({
         embed: {
           title: `${info.player.name} is a potentially harmful player!`,
@@ -121,11 +117,11 @@ export default class BB_SCBLInfo extends DiscordBasePlugin {
           thumbnail: {
             url: data.steamUser.avatarFull
           },
-          description: `[${info.player.name}](https://squad-community-ban-list.com/search/${info.player.steamID}) [BM-Link](https://www.battlemetrics.com/rcon/players?filter%5Bsearch%5D=${info.player.steamID}) has ${data.steamUser.reputationPoints} reputation points on the Squad Community Ban List and is therefore a potentially harmful player.`,
+          description: `[${info.player.name}](https://squad-community-ban-list.com/search/${info.player.steamID}) ([BM-Link](https://www.battlemetrics.com/rcon/players?filter%5Bsearch%5D=${info.player.steamID})) has ${data.steamUser.reputationPoints} reputation points on the Squad Community Ban List and is therefore a potentially harmful player.`,
           fields: [
             {
               name: 'Reputation Points',
-              value: `${data.steamUser.reputationPoints} (${daysSinceLastRepChange} Days since last change)`,
+              value: `${data.steamUser.reputationPoints} (${daysSinceLastRepChange} Days since last entry)`,
               inline: true
             },
             {
