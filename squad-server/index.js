@@ -231,6 +231,7 @@ export default class SquadServer extends EventEmitter {
       data.player = {
         // name: 'placeholder',
         suffix: data.playerSuffix,
+        name: data.playerSuffix,
         controller: data.controller,
         steamID: data.steamID
         // playerID: 99999, //Error Value
