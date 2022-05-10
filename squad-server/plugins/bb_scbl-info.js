@@ -117,7 +117,7 @@ export default class BB_SCBLInfo extends DiscordBasePlugin {
           thumbnail: {
             url: data.steamUser.avatarFull
           },
-          description: `[${info.player.name}](https://squad-community-ban-list.com/search/${info.player.steamID}) ([BM-Link](https://www.battlemetrics.com/rcon/players?filter%5Bsearch%5D=${info.player.steamID})) has ${data.steamUser.reputationPoints} reputation points on the Squad Community Ban List and is therefore a potentially harmful player.`,
+          description: `[${info.player.name}](https://www.battlemetrics.com/rcon/players?filter%5Bsearch%5D=${info.player.steamID}) ([SCBL-Link](https://squad-community-ban-list.com/search/${info.player.steamID})) has ${data.steamUser.reputationPoints} reputation points on the Squad Community Ban List and is therefore a potentially harmful player.`,
           fields: [
             {
               name: 'Reputation Points',
