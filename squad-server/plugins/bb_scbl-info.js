@@ -147,9 +147,6 @@ export default class BB_SCBLInfo extends DiscordBasePlugin {
           ],
           color: '#ffc40b',
           timestamp: info.time.toISOString(),
-          footer: {
-            text: 'Powered by SquadJS and the Squad Community Ban List'
-          }
         }
       });
     } catch (err) {
