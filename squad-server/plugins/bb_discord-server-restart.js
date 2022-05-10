@@ -54,33 +54,6 @@ export default class BB_DiscordServerRestart extends DiscordBasePlugin {
         this.server.rcon.kick(player.steamID,"Restarting Server. Please find BB | in server browser to connect. Reconnect Button is broken.")
       }
     }
-
-
-    const winnerText = info.winner?info.winner:'Could not be determined.';
-    await this.sendDiscordMessage({
-      embed: {
-        title: 'Round Ended',
-        color: this.options.color,
-        fields: [
-          {
-            name: 'Winner',
-            value: `${winnerText}`
-          },
-          {
-            name: 'Last Layer',
-            value: `${this.server.layerHistory[1].layer.name}`,
-            inline: true
-          },
-          {
-            name: 'Next Layer',
-            value: `${this.server.layerHistory[0].layer.name}`,
-            inline: true
-          }
-
-        ],
-        timestamp: info.time.toISOString()
-      }
-    });
   }
 
   async killServer() {
