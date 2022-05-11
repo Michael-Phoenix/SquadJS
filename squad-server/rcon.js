@@ -173,6 +173,14 @@ export default class SquadRcon extends Rcon {
     await this.execute(`AdminBroadcast ${message}`);
   }
 
+  async killServer(message) {
+    await this.execute(`killServer`);
+  }
+
+  async kick(steamID, reason) {
+    await this.execute(`AdminKick "${steamID}" ${reason}`);
+  }
+
   async setFogOfWar(mode) {
     await this.execute(`AdminSetFogOfWar ${mode}`);
   }
