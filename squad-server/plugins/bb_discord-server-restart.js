@@ -48,6 +48,12 @@ export default class BB_DiscordServerRestart extends DiscordBasePlugin {
 
   async onNewGame(info) {
     if(info.layerClassname === "Narva_Destruction_v1"){
+
+      this.verbose(
+        "BB_DiscordServerRestart",
+        1,
+        `layerClassname: ${info.layerClassname}`
+      );
       this.interval = setInterval(this.broadcast, 1000);
       setTimeout(this.killServer, 20 * 1000);
       for(const player of this.server.players) {
@@ -67,5 +73,11 @@ export default class BB_DiscordServerRestart extends DiscordBasePlugin {
   async onServerStart(info) {
     this.lastRestartTime = Date.parse(info.time);
     clearInterval(this.interval);
+
+    this.verbose(
+      "BB_DiscordServerRestart",
+      1,
+      `layerClassname: ${this.lastRestartTime}`
+    );
   }
 }
