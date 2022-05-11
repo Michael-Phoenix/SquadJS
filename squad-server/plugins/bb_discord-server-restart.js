@@ -55,7 +55,7 @@ export default class BB_DiscordServerRestart extends DiscordBasePlugin {
         `layerClassname: ${info.layerClassname}`
       );
       this.interval = setInterval(this.broadcast, 1000);
-      setTimeout(this.killServer, 20 * 1000);
+      this.timeout = setTimeout(this.killServer, 20 * 1000);
       for(const player of this.server.players) {
         this.server.rcon.kick(player.steamID,"Restarting Server. Please find BB | in server browser to connect. Reconnect Button is broken.")
       }
@@ -73,6 +73,8 @@ export default class BB_DiscordServerRestart extends DiscordBasePlugin {
   async onServerStart(info) {
     this.lastRestartTime = Date.parse(info.time);
     clearInterval(this.interval);
+    this.interval.unref();
+    this.timeout.unref();
 
     this.verbose(
       "BB_DiscordServerRestart",
