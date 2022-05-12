@@ -6,7 +6,7 @@ export default class BB_DiscordServerRestart extends DiscordBasePlugin {
   }
 
   static get defaultEnabled() {
-    return true;
+    return false;
   }
 
   static get optionsSpecification() {
