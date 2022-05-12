@@ -127,6 +127,7 @@ export default class BB_DiscordServerRestart extends DiscordBasePlugin {
     );
     if(currentTime.getUTCHours() < this.options.restart_start ||
       currentTime.getUTCHours() > this.options.restart_end ||
+      (currentTime.getTime() - this.lastRestartTime) * 1000 * 3600 < 3 ||
       this.server.currentLayer.rawName === this.options.restart_map ||
       this.server.nextLayer?.rawName === this.options.restart_map)
       return;
