@@ -66,8 +66,9 @@ export default class BB_DiscordServerRestart extends DiscordBasePlugin {
   async onNewGame(info) {
     if(info.layerClassname === this.options.restart_map){
 
-      this.verbose(1,
-        `layerClassname: ${info.layerClassname}`
+      this.verbose(
+        1,
+        `Initiating regular restart on Restart Map.`
       );
       this.interval = setInterval(this.broadcast, 1000);
       this.timeout = setTimeout(this.killServer, 20 * 1000);
@@ -78,8 +79,12 @@ export default class BB_DiscordServerRestart extends DiscordBasePlugin {
       const currentTime = new Date();
       if(this.server.nextLayer?.rawName != this.options.restart_map &&
         (currentTime.getTime() - this.server.lastRestartTime) / (1000 * 3600) >= 3 &&
-        currentTime.getUTCHours() >= this.options.restart_start &&
-        currentTime.getUTCHours() < this.options.restart_end) {
+        (currentTime.getUTCHours() >= this.options.restart_start &&
+        currentTime.getUTCHours() < this.options.restart_end)) {
+          this.verbose(
+            1,
+            `Queue up Restart Map.`
+          );
           this.server.rcon.setNextLayer(this.options.restart_map);
       }
     }
@@ -104,12 +109,12 @@ export default class BB_DiscordServerRestart extends DiscordBasePlugin {
 
   async checkEmptyRestart() {
     const currentTime = new Date();
-    this.verbose(
-      1,
-      `checking for restart at : ${currentTime.toISOString()} ${currentTime.getTime()} Server Restart Time: ${this.server.lastRestartTime} Time since last restart: ${(currentTime.getTime() - this.server.lastRestartTime) / (1000 * 3600)}`
-    );
+    //this.verbose(
+    //  1,
+    //  `checking for restart at : ${currentTime.toISOString()} ${currentTime.getTime()} Server Restart Time: ${this.server.lastRestartTime} Time since last restart: ${(currentTime.getTime() - this.server.lastRestartTime) / (1000 * 3600)}`
+    //);
     if(currentTime.getUTCHours() < this.options.restart_start ||
-      currentTime.getUTCHours() > this.options.restart_end ||
+      currentTime.getUTCHours() >= this.options.restart_end ||
       (currentTime.getTime() - this.server.lastRestartTime) / (1000 * 3600) < 3 ||
       this.server.currentLayer.rawName === this.options.restart_map ||
       this.server.nextLayer?.rawName === this.options.restart_map)
@@ -118,7 +123,7 @@ export default class BB_DiscordServerRestart extends DiscordBasePlugin {
     if(this.server.players?.length <= 20) {
       this.verbose(
         1,
-        `Initiating restart.`
+        `Initiating restart immediately due to low Player count.`
       );
       this.interval = setInterval(this.broadcast, 1000);
       this.timeout = setTimeout(this.killServer, 20 * 1000);
