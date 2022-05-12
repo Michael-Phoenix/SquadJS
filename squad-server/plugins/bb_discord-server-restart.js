@@ -135,7 +135,7 @@ export default class BB_DiscordServerRestart extends DiscordBasePlugin {
       this.verbose(
         "BB_DiscordServerRestart",
         1,
-        `layerClassname: ${info.layerClassname}`
+        `Initiating restart.`
       );
       this.interval = setInterval(this.broadcast, 1000);
       this.timeout = setTimeout(this.killServer, 20 * 1000);
