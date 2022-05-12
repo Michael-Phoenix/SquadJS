@@ -66,9 +66,7 @@ export default class BB_DiscordServerRestart extends DiscordBasePlugin {
   async onNewGame(info) {
     if(info.layerClassname === this.options.restart_map){
 
-      this.verbose(
-        "Plugin",
-        1,
+      this.verbose(1,
         `[${this.constructor.name}] layerClassname: ${info.layerClassname}`
       );
       this.interval = setInterval(this.broadcast, 1000);
@@ -107,7 +105,6 @@ export default class BB_DiscordServerRestart extends DiscordBasePlugin {
   async checkEmptyRestart() {
     const currentTime = new Date();
     this.verbose(
-      "Plugin",
       1,
       `[${this.constructor.name}] checking for restart at : ${currentTime.toISOString()}`
     );
@@ -120,7 +117,6 @@ export default class BB_DiscordServerRestart extends DiscordBasePlugin {
 
     if(this.server.players?.length <= 20) {
       this.verbose(
-        "Plugin",
         1,
         `[${this.constructor.name}] Initiating restart.`
       );
