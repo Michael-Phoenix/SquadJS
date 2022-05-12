@@ -24,17 +24,17 @@ export default class BB_DiscordServerRestart extends DiscordBasePlugin {
         default: 16761867
       },
       restart_start: {
-        required: true,
+        required: false,
         description: 'Begin (hour) of the restart check period.',
         default: 5
       },
       restart_end: {
-        required: true,
+        required: false,
         description: 'End (hour) of the restart check period.',
         default: 7
       },
       restart_map: {
-        required: true,
+        required: false,
         description: 'Layer that determines the restart Map.',
         default: "Narva_Destruction_v1"
       }
