@@ -27,6 +27,7 @@ export default class SquadServer extends EventEmitter {
 
     this.id = options.id;
     this.options = options;
+    this.lastRestartTime = 0;
 
     this.layerHistory = [];
     this.layerHistoryMaxLength = options.layerHistoryMaxLength || 20;
@@ -178,6 +179,11 @@ export default class SquadServer extends EventEmitter {
         host: this.options.ftp.host || this.options.host
       })
     );
+
+    this.logParser.on('SERVER_START', (data) => {
+      this.lastRestartTime = Date.parse(data.time);
+      this.emitProxy('SERVER_START', data);
+    });
 
     this.logParser.on('ADMIN_BROADCAST', (data) => {
       this.emitProxy('ADMIN_BROADCAST', data);

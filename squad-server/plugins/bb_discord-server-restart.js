@@ -43,7 +43,6 @@ export default class BB_DiscordServerRestart extends DiscordBasePlugin {
 
   constructor(server, options, connectors) {
     super(server, options, connectors);
-    this.lastRestartTime = 0;
 
     this.killServer = this.killServer.bind(this);
     this.broadcast = this.broadcast.bind(this);
@@ -54,16 +53,14 @@ export default class BB_DiscordServerRestart extends DiscordBasePlugin {
   }
 
   async mount() {
-    this.restartInterval = setInterval(this.checkEmptyRestart, 60 * 1000);
+    this.restartCheckInterval = setInterval(this.checkEmptyRestart, 60 * 1000);
     this.server.on('NEW_GAME', this.onNewGame);
-    this.server.on('SERVER_START', this.onServerStart);
     this.server.on('PLAYER_CONNECTED', this.onPlayerConnected);
   }
 
   async unmount() {
-    clearInterval(this.restartInterval);
+    clearInterval(this.restartCheckInterval);
     this.server.removeEventListener('NEW_GAME', this.onNewGame);
-    this.server.removeEventListener('SERVER_START', this.onServerStart);
     this.server.removeEventListener('PLAYER_CONNECTED', this.onPlayerConnected);
   }
 
@@ -83,7 +80,7 @@ export default class BB_DiscordServerRestart extends DiscordBasePlugin {
     } else {
       const currentTime = new Date();
       if(this.server.nextLayer?.rawName != this.options.restart_map &&
-        (currentTime.getTime() - this.lastRestartTime) * 1000 * 3600 >= 3 &&
+        (currentTime.getTime() - this.server.lastRestartTime) * 1000 * 3600 >= 3 &&
         currentTime.getUTCHours() >= this.options.restart_start &&
         currentTime.getUTCHours() <= this.options.restart_end) {
           this.server.rcon.setNextLayer(this.options.restart_map);
@@ -102,16 +99,6 @@ export default class BB_DiscordServerRestart extends DiscordBasePlugin {
     await this.server.rcon.broadcast("Restarting Server now. Please reconnect through Server Browser: BB | BloodBound");
   }
 
-  async onServerStart(info) {
-    this.lastRestartTime = Date.parse(info.time);
-
-    this.verbose(
-      "BB_DiscordServerRestart",
-      1,
-      `lastRestartTime: ${this.lastRestartTime}`
-    );
-  }
-
   async onPlayerConnected(info) {
     if(this.server.currentLayer.rawName === this.options.restart_map){
       this.server.rcon.kick(info.steamID,"Restarting Server. Please find BB | in server browser to connect. Reconnect Button is broken.");
@@ -127,7 +114,7 @@ export default class BB_DiscordServerRestart extends DiscordBasePlugin {
     );
     if(currentTime.getUTCHours() < this.options.restart_start ||
       currentTime.getUTCHours() > this.options.restart_end ||
-      (currentTime.getTime() - this.lastRestartTime) * 1000 * 3600 < 3 ||
+      (currentTime.getTime() - this.server.lastRestartTime) * 1000 * 3600 < 3 ||
       this.server.currentLayer.rawName === this.options.restart_map ||
       this.server.nextLayer?.rawName === this.options.restart_map)
       return;
