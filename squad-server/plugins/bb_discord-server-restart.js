@@ -47,7 +47,6 @@ export default class BB_DiscordServerRestart extends DiscordBasePlugin {
     this.killServer = this.killServer.bind(this);
     this.broadcast = this.broadcast.bind(this);
     this.onNewGame = this.onNewGame.bind(this);
-    this.onServerStart = this.onServerStart.bind(this);
     this.onPlayerConnected = this.onPlayerConnected.bind(this);
     this.checkEmptyRestart = this.checkEmptyRestart.bind(this);
   }
