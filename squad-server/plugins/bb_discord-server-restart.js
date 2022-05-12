@@ -26,12 +26,12 @@ export default class BB_DiscordServerRestart extends DiscordBasePlugin {
       restart_start: {
         required: true,
         description: 'Begin (hour) of the restart check period.',
-        default: "5"
+        default: 5
       },
       restart_end: {
         required: true,
         description: 'End (hour) of the restart check period.',
-        default: "7"
+        default: 7
       },
       restart_map: {
         required: true,
@@ -83,7 +83,7 @@ export default class BB_DiscordServerRestart extends DiscordBasePlugin {
     } else {
       const currentTime = new Date();
       if(this.server.nextLayer?.rawName != this.options.restart_map &&
-        (currentTime.getTime() - this.lastRestartTime) 1000 * 3600 >= 3 &&
+        (currentTime.getTime() - this.lastRestartTime) * 1000 * 3600 >= 3 &&
         currentTime.getUTCHours() >= this.options.restart_start &&
         currentTime.getUTCHours() <= this.options.restart_end) {
           this.server.rcon.setNextLayer(this.options.restart_map);
