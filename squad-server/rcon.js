@@ -173,7 +173,7 @@ export default class SquadRcon extends Rcon {
     await this.execute(`AdminBroadcast ${message}`);
   }
 
-  async killServer(message) {
+  async killServer() {
     await this.execute(`AdminKillServer`);
   }
 
@@ -196,5 +196,9 @@ export default class SquadRcon extends Rcon {
 
   async switchTeam(steamID) {
     await this.execute(`AdminForceTeamChange "${steamID}"`);
+  }
+
+  async setNextLayer(layer) {
+    await this.execute(`AdminSetNextLayer "${layer}"`);
   }
 }
