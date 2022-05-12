@@ -120,7 +120,11 @@ export default class BB_DiscordServerRestart extends DiscordBasePlugin {
 
   async checkEmptyRestart() {
     const currentTime = new Date();
-
+    this.verbose(
+      "BB_DiscordServerRestart",
+      1,
+      `check ing for restart at : ${currentTime.toISOString()}`
+    );
     if(currentTime.getUTCHours() < this.options.restart_start ||
       currentTime.getUTCHours() > this.options.restart_end ||
       this.server.currentLayer.rawName === this.options.restart_map ||
