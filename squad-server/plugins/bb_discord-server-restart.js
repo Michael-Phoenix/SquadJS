@@ -67,7 +67,7 @@ export default class BB_DiscordServerRestart extends DiscordBasePlugin {
     if(info.layerClassname === this.options.restart_map){
 
       this.verbose(1,
-        `[${this.constructor.name}] layerClassname: ${info.layerClassname}`
+        `layerClassname: ${info.layerClassname}`
       );
       this.interval = setInterval(this.broadcast, 1000);
       this.timeout = setTimeout(this.killServer, 20 * 1000);
@@ -79,7 +79,7 @@ export default class BB_DiscordServerRestart extends DiscordBasePlugin {
       if(this.server.nextLayer?.rawName != this.options.restart_map &&
         (currentTime.getTime() - this.server.lastRestartTime) * 1000 * 3600 >= 3 &&
         currentTime.getUTCHours() >= this.options.restart_start &&
-        currentTime.getUTCHours() <= this.options.restart_end) {
+        currentTime.getUTCHours() < this.options.restart_end) {
           this.server.rcon.setNextLayer(this.options.restart_map);
       }
     }
@@ -106,7 +106,7 @@ export default class BB_DiscordServerRestart extends DiscordBasePlugin {
     const currentTime = new Date();
     this.verbose(
       1,
-      `[${this.constructor.name}] checking for restart at : ${currentTime.toISOString()}`
+      `checking for restart at : ${currentTime.toISOString()} Server Restart Time: ${this.server.lastRestartTime} Time since last restart: ${(currentTime.getTime() - this.server.lastRestartTime) * 1000 * 3600}`
     );
     if(currentTime.getHours() < this.options.restart_start ||
       currentTime.getHours() > this.options.restart_end ||
@@ -118,7 +118,7 @@ export default class BB_DiscordServerRestart extends DiscordBasePlugin {
     if(this.server.players?.length <= 20) {
       this.verbose(
         1,
-        `[${this.constructor.name}] Initiating restart.`
+        `Initiating restart.`
       );
       this.interval = setInterval(this.broadcast, 1000);
       this.timeout = setTimeout(this.killServer, 20 * 1000);
