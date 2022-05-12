@@ -123,18 +123,21 @@ export default class BB_DiscordServerRestart extends DiscordBasePlugin {
 
     if(currentTime.getUTCHours() < this.options.restart_start ||
       currentTime.getUTCHours() > this.options.restart_end ||
-      this.server.players.length > 20)
+      this.server.currentLayer.rawName === this.options.restart_map ||
+      this.server.nextLayer?.rawName === this.options.restart_map)
       return;
 
-    this.verbose(
-      "BB_DiscordServerRestart",
-      1,
-      `layerClassname: ${info.layerClassname}`
-    );
-    this.interval = setInterval(this.broadcast, 1000);
-    this.timeout = setTimeout(this.killServer, 20 * 1000);
-    for(const player of this.server.players) {
-      this.server.rcon.kick(player.steamID,"Restarting Server. Please find BB | in server browser to connect. Reconnect Button is broken.");
+    if(this.server.players?.length <= 20) {
+      this.verbose(
+        "BB_DiscordServerRestart",
+        1,
+        `layerClassname: ${info.layerClassname}`
+      );
+      this.interval = setInterval(this.broadcast, 1000);
+      this.timeout = setTimeout(this.killServer, 20 * 1000);
+      for(const player of this.server.players) {
+        this.server.rcon.kick(player.steamID,"Restarting Server. Please find BB | in server browser to connect. Reconnect Button is broken.");
+      }
     }
   }
 }
