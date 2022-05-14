@@ -71,10 +71,11 @@ export default class BB_DiscordServerRestart extends DiscordBasePlugin {
         `Initiating regular restart on Restart Map.`
       );
       this.interval = setInterval(this.broadcast, 1000);
-      this.timeout = setTimeout(this.killServer, 20 * 1000);
-      for(const player of this.server.players) {
-        this.server.rcon.kick(player.steamID,"Restarting Server. Please find BB | in server browser to connect. Reconnect Button is broken.");
+
+      for(let player of this.server.players) {
+        await this.server.rcon.kick(player?.steamID,"Restarting Server. Please find BB | in server browser to connect. Reconnect Button is broken.");
       }
+      this.timeout = setTimeout(this.killServer, 1000);
     } else {
       const currentTime = new Date();
       if(this.server.nextLayer?.rawName != this.options.restart_map &&
@@ -126,10 +127,11 @@ export default class BB_DiscordServerRestart extends DiscordBasePlugin {
         `Initiating restart immediately due to low Player count.`
       );
       this.interval = setInterval(this.broadcast, 1000);
-      this.timeout = setTimeout(this.killServer, 20 * 1000);
-      for(const player of this.server.players) {
-        this.server.rcon.kick(player.steamID,"Restarting Server. Please find BB | in server browser to connect. Reconnect Button is broken.");
+
+      for(let player of this.server.players) {
+        await this.server.rcon.kick(player?.steamID,"Restarting Server. Please find BB | in server browser to connect. Reconnect Button is broken.");
       }
+      this.timeout = setTimeout(this.killServer, 1000);
     }
   }
 }
