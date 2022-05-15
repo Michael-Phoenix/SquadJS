@@ -79,7 +79,7 @@ export default class BB_DiscordServerRestart extends DiscordBasePlugin {
       );
       clearInterval(this.preBroadcastInterval);
       this.interval = setInterval(this.broadcast, 1000);
-      await kickAllPlayers();
+      await this.kickAllPlayers();
       this.timeout = setTimeout(this.killServer, 1000);
     } else {
       const currentTime = new Date();
@@ -142,10 +142,11 @@ export default class BB_DiscordServerRestart extends DiscordBasePlugin {
       );
       this.interval = setInterval(this.broadcast, 1000);
 
-      await kickAllPlayers();
+      await this.kickAllPlayers();
       this.timeout = setTimeout(this.killServer, 1000);
     }
   }
+
   async kickAllPlayers() {
     for(let player of this.server.players) {
       this.verbose(
