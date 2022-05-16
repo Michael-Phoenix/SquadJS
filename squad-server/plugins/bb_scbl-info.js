@@ -103,11 +103,16 @@ export default class BB_SCBLInfo extends DiscordBasePlugin {
         );
         return;
       }
+      let autoKicked = "";
       //Last Reputation change
       const daysSinceLastRepChange = Math.floor((Date.now() - Date.parse(data.steamUser.lastRefreshedReputationPoints)) / (1000 * 3600 * 24));
+      if(data.steamUser.riskRating >= 10 ) {
+        await this.server.rcon.kick(info.player.steamID,"https://squad-community-ban-list.com/banned");
+        autoKicked = " and was automatically kicked";
+      }
       await this.sendDiscordMessage({
         embed: {
-          title: `${info.player.name} is a potentially harmful player!`,
+          title: `${info.player.name} is a potentially harmful player${autoKicked}!`,
           author: {
             name: 'Squad Community Ban List',
             url: 'https://squad-community-ban-list.com/',
