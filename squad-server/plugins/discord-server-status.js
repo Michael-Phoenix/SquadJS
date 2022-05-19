@@ -121,6 +121,6 @@ export default class DiscordServerStatus extends DiscordBaseMessageUpdater {
 
     await this.options.discordClient.user.setPresence({ activities: [{ name: `(${this.server.a2sPlayerCount}/${this.server.publicSlots}) ${
       this.server.currentLayer?.name || 'Unknown'
-    }` }], status: 'idle' });
+    }` , type: "Custom", emoji: ":BB:"}], status: 'online' });
   }
 }
