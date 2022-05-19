@@ -58,7 +58,7 @@ export default class BB_DiscordRoundEnd extends DiscordBasePlugin {
           },
           {
             name: 'Next Layer',
-            value: `${this.server.layerHistory[0].layer.name}`,
+            value: `${this.server.currentLayer}`,
             inline: true
           }
 
