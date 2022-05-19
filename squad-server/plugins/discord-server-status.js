@@ -119,8 +119,11 @@ export default class DiscordServerStatus extends DiscordBaseMessageUpdater {
   async updateStatus() {
     if (!this.options.setBotStatus) return;
 
-    await this.options.discordClient.user.setPresence({ activities: [{ name: `(${this.server.a2sPlayerCount}/${this.server.publicSlots}) ${
-      this.server.currentLayer?.name || 'Unknown'
-    }` , type: "Custom"}], status: 'online' });
+    await this.options.discordClient.user.setActivity(
+      `(${this.server.a2sPlayerCount}/${this.server.publicSlots}) ${
+        this.server.currentLayer?.name || 'Unknown'
+      }`,
+      { type: 'CUSTOM' }
+    );
   }
 }
