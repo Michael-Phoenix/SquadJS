@@ -40,17 +40,30 @@ class Layers {
     await this.pull();
 
     const matches = this.layers.filter(condition);
-    if (matches.length === 1) return matches[0];
+    //Return first match, even though more than one exists in the list (List Error)
+    if (matches.length >= 1) return matches[0];
 
     return null;
   }
 
   getLayerByName(name) {
-    return this.getLayerByCondition((layer) => layer.name === name);
+    //return at least the info we already have
+    const layer = this.getLayerByCondition((layer) => layer.name === name);
+    if(!layer) {
+      layer.name = name;
+    }
+    return layer;
+
   }
 
   getLayerByClassname(classname) {
-    return this.getLayerByCondition((layer) => layer.classname === classname);
+    //return at least the info we already have
+    const layer = this.getLayerByCondition((layer) => layer.classname === classname);
+    if(!layer) {
+      layer.classname = classname;
+      layer.name = classname;
+    }
+    return layer;
   }
 }
 
