@@ -103,10 +103,11 @@ export default class BB_SCBLInfo extends DiscordBasePlugin {
         );
         return;
       }
-      let autoKicked = "";
       //Last Reputation change
       const daysSinceLastRepChange = Math.floor((Date.now() - Date.parse(data.steamUser.lastRefreshedReputationPoints)) / (1000 * 3600 * 24));
-      if(data.steamUser.riskRating >= 10 ) {
+
+      let autoKicked = "";
+      if(this.options.kick && data.steamUser.riskRating >= this.options.kickThreshold) {
         await this.server.rcon.kick(info.player.steamID,"https://squad-community-ban-list.com/banned");
         autoKicked = " and was automatically kicked";
       }
