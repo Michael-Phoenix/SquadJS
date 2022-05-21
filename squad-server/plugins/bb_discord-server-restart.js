@@ -91,7 +91,7 @@ export default class BB_DiscordServerRestart extends DiscordBasePlugin {
             1,
             `Queueing up Restart Map.`
           );
-          this.preBroadcastInterval = setInterval(this.preBroadcast, 3 * 60 * 1000);
+          if(!this.preBroadcastInterval) this.preBroadcastInterval = setInterval(this.preBroadcast, 3 * 60 * 1000);
           this.server.rcon.setNextLayer(this.options.restart_map);
       }
     }
@@ -99,6 +99,8 @@ export default class BB_DiscordServerRestart extends DiscordBasePlugin {
 
   async killServer() {
     clearInterval(this.interval);
+    clearInterval(this.preBroadcastInterval);
+    delete this.preBroadcastInterval;
     this.interval?.unref();
     this.timeout?.unref();
     await this.server.rcon.killServer();
@@ -124,6 +126,7 @@ export default class BB_DiscordServerRestart extends DiscordBasePlugin {
 
   async checkEmptyRestart() {
     const currentTime = new Date();
+    if(!this.preBroadcastInterval && this.server.nextLayer?.rawName === this.options.restart_map) this.preBroadcastInterval = setInterval(this.preBroadcast, 3 * 60 * 1000);
     //this.verbose(
     //  1,
     //  `checking for restart at : ${currentTime.toISOString()} ${currentTime.getTime()} Server Restart Time: ${this.server.lastRestartTime} Time since last restart: ${(currentTime.getTime() - this.server.lastRestartTime) / (1000 * 3600)}`
