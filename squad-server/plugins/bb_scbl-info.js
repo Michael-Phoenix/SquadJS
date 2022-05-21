@@ -32,6 +32,16 @@ export default class BB_SCBLInfo extends DiscordBasePlugin {
           'reputation points, see the ' +
           '<a href="https://squad-community-ban-list.com/faq">Squad Community Ban List\'s FAQ</a>',
         default: 6
+      },
+      kick: {
+        required: false,
+        description: "Whether to actually kick players automatically at all (see also kickThreshold)",
+        default: false
+      },
+      kickThreshold: {
+        required: false,
+        description: "from this threshold, players get automatically kicked.",
+        default: 10
       }
     };
   }
