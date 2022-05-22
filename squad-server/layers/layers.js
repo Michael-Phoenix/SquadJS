@@ -52,7 +52,7 @@ class Layers {
     if(!layer) {
       layer.name = name;
       layer.classname = name.replaceAll(" ", "_");
-      layer.rawName = name.replaceAll(" ", "_");
+      layer.layerid = name.replaceAll(" ", "_");
     }
     return layer;
 
@@ -64,7 +64,7 @@ class Layers {
     if(!layer) {
       layer.classname = classname;
       layer.name = classname.replaceAll("_", " ");
-      layer.rawName = classname;
+      layer.layerid = classname;
     }
     return layer;
   }
