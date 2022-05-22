@@ -48,7 +48,7 @@ class Layers {
 
   getLayerByName(name) {
     //return at least the info we already have
-    const layer = this.getLayerByCondition((layer) => layer.name === name);
+    let layer = this.getLayerByCondition((layer) => layer.name === name);
     if(!layer) {
       layer.name = name;
       layer.classname = name.replaceAll(" ", "_");
@@ -60,7 +60,7 @@ class Layers {
 
   getLayerByClassname(classname) {
     //return at least the info we already have
-    const layer = this.getLayerByCondition((layer) => layer.classname === classname);
+    let layer = this.getLayerByCondition((layer) => layer.classname === classname);
     if(!layer) {
       layer.classname = classname;
       layer.name = classname.replaceAll("_", " ");
