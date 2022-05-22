@@ -83,7 +83,7 @@ export default class BB_DiscordServerRestart extends DiscordBasePlugin {
       this.timeout = setTimeout(this.killServer, 1000);
     } else {
       const currentTime = new Date();
-      if(this.server.nextLayer?.rawName != this.options.restart_map &&
+      if(this.server.nextLayer?.layerid != this.options.restart_map &&
         (currentTime.getTime() - this.server.lastRestartTime) / (1000 * 3600) >= this.options.time_between_restarts &&
         (currentTime.getUTCHours() >= this.options.restart_start &&
         currentTime.getUTCHours() < this.options.restart_end)) {
@@ -119,23 +119,23 @@ export default class BB_DiscordServerRestart extends DiscordBasePlugin {
   }
 
   async onPlayerConnected(info) {
-    if(this.server.currentLayer.rawName === this.options.restart_map){
+    if(this.server.currentLayer.layerid === this.options.restart_map){
       this.server.rcon.kick(info.steamID,"Restarting Server. Please find BB | in server browser to connect. Reconnect Button is broken.");
     }
   }
 
   async checkEmptyRestart() {
     const currentTime = new Date();
-    if(!this.preBroadcastInterval && this.server.nextLayer?.rawName === this.options.restart_map) this.preBroadcastInterval = setInterval(this.preBroadcast, 3 * 60 * 1000);
+    if(!this.preBroadcastInterval && this.server.nextLayer?.layerid === this.options.restart_map) this.preBroadcastInterval = setInterval(this.preBroadcast, 3 * 60 * 1000);
     this.verbose(
       1,
-      `NextLayer: ${this.server.nextLayer?.rawName}, preBroadCast: ${this.preBroadcastInterval}, checking for restart at : ${currentTime.toISOString()} ${currentTime.getTime()} Server Restart Time: ${this.server.lastRestartTime} Time since last restart: ${(currentTime.getTime() - this.server.lastRestartTime) / (1000 * 3600)}`
+      `NextLayer: ${this.server.nextLayer?.classname} (layerid ${this.server.nextLayer?.layerid}), preBroadCast: ${this.preBroadcastInterval}, checking for restart at : ${currentTime.toISOString()} ${currentTime.getTime()} Server Restart Time: ${this.server.lastRestartTime} Time since last restart: ${(currentTime.getTime() - this.server.lastRestartTime) / (1000 * 3600)}`
     );
     if(currentTime.getUTCHours() < this.options.restart_start ||
       currentTime.getUTCHours() >= this.options.restart_end ||
       (currentTime.getTime() - this.server.lastRestartTime) / (1000 * 3600) < this.options.time_between_restarts ||
-      this.server.currentLayer.rawName === this.options.restart_map ||
-      this.server.nextLayer?.rawName === this.options.restart_map)
+      this.server.currentLayer.layerid === this.options.restart_map ||
+      this.server.nextLayer?.layerid === this.options.restart_map)
       return;
 
     if(this.server.players?.length <= 20) {
