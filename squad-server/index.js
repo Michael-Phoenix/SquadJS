@@ -314,7 +314,7 @@ export default class SquadServer extends EventEmitter {
 
       delete data.victimName;
       delete data.attackerName;
-
+      if(!data.woundedWasCalled && data.teamkill) this.emitProxy('TEAMKILL', data); 
       this.emitProxy('PLAYER_DIED', data);
     });
 
