@@ -10,7 +10,8 @@ export default {
       victimName: args[3],
       damage: parseFloat(args[4]),
       attackerPlayerController: args[5],
-      weapon: args[7]
+      weapon: args[7],
+      woundedWasCalled : true
     };
 
     if (data.victimName !== 'nullptr') {
