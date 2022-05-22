@@ -304,18 +304,19 @@ export default class SquadServer extends EventEmitter {
 
     this.logParser.on('PLAYER_DIED', async (data) => {
       data.victim = await this.getPlayerByName(data.victimName);
-      //if(!data.victim) data.victim = await this.getPlayerByPlayerController(data.victimName);
+      //if(!data.victim) data.victim = await this.getPlayerByController(data.victimName);
       if(!data.attacker) data.attacker = await this.getPlayerByController(data.attackerPlayerController);
 
       if (data.victim && data.attacker)
         data.teamkill =
           data.victim.teamID === data.attacker.teamID &&
+          data.attacker.steamID && data.victim.steamID &&
           data.victim.steamID !== data.attacker.steamID;
 
       delete data.victimName;
       delete data.attackerName;
-      if(!data.woundedWasCalled && data.teamkill) this.emitProxy('TEAMKILL', data); 
       this.emitProxy('PLAYER_DIED', data);
+      if(!data.woundedWasCalled && data.teamkill) this.emitProxy('TEAMKILL', data); 
     });
 
     this.logParser.on('PLAYER_REVIVED', async (data) => {
