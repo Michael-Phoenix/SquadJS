@@ -129,7 +129,7 @@ export default class BB_DiscordServerRestart extends DiscordBasePlugin {
     if(!this.preBroadcastInterval && this.server.nextLayer?.rawName === this.options.restart_map) this.preBroadcastInterval = setInterval(this.preBroadcast, 3 * 60 * 1000);
     this.verbose(
       1,
-      `preBroadCast: ${this.preBroadcastInterval}, checking for restart at : ${currentTime.toISOString()} ${currentTime.getTime()} Server Restart Time: ${this.server.lastRestartTime} Time since last restart: ${(currentTime.getTime() - this.server.lastRestartTime) / (1000 * 3600)}`
+      `NextLayer: ${this.server.nextLayer?.rawName}, preBroadCast: ${this.preBroadcastInterval}, checking for restart at : ${currentTime.toISOString()} ${currentTime.getTime()} Server Restart Time: ${this.server.lastRestartTime} Time since last restart: ${(currentTime.getTime() - this.server.lastRestartTime) / (1000 * 3600)}`
     );
     if(currentTime.getUTCHours() < this.options.restart_start ||
       currentTime.getUTCHours() >= this.options.restart_end ||
