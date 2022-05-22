@@ -50,7 +50,7 @@ export default class BB_DiscordSpecialTeamkill extends DiscordBasePlugin {
 
   async onTeamkill(info) {
     if (!info.attacker) return;
-    if (!info.weapon.toLowerCase().includes("bayonet")) return;
+    if (!info.weapon.toLowerCase().includes("bayonet") && !info.weapon.toLowerCase().includes("knife") ) return;
     const fields = [
       {
         name: "Teamkiller",
