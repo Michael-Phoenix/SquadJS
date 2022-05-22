@@ -316,7 +316,7 @@ export default class SquadServer extends EventEmitter {
       delete data.victimName;
       delete data.attackerName;
       this.emitProxy('PLAYER_DIED', data);
-      if(!data.woundedWasCalled && data.teamkill) this.emitProxy('TEAMKILL', data); 
+      if(!data.woundedWasCalled && data.teamkill) this.emitProxy('TEAMKILL', data);
     });
 
     this.logParser.on('PLAYER_REVIVED', async (data) => {
@@ -551,7 +551,9 @@ export default class SquadServer extends EventEmitter {
     if (!forceUpdate || this.syncData) {
       matches = this.players.filter(condition);
       if (matches.length === 1) return matches[0];
-
+      if(matches.length > 1) {
+        Logger.verbose('LogParser', 1, `Warning: getPlayerByCondition() Found more than one player on match: ${JSON.stringify(matches)}`);
+      }
       if (!retry || this.syncData) return null;
     }
 
