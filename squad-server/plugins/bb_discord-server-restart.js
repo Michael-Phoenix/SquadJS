@@ -48,14 +48,15 @@ export default class BB_DiscordServerRestart extends DiscordBasePlugin {
 
   constructor(server, options, connectors) {
     super(server, options, connectors);
-
+    this.onNewGame = this.onNewGame.bind(this);
+    this.checkEmptyRestart = this.checkEmptyRestart.bind(this);
+    this.initiateRestart = this.initiateRestart.bind(this);
     this.killServer = this.killServer.bind(this);
     this.preBroadcast = this.preBroadcast.bind(this);
     this.broadcast = this.broadcast.bind(this);
-    this.onNewGame = this.onNewGame.bind(this);
     this.onPlayerConnected = this.onPlayerConnected.bind(this);
-    this.checkEmptyRestart = this.checkEmptyRestart.bind(this);
     this.kickAllPlayers = this.kickAllPlayers.bind(this);
+
   }
 
   async mount() {
@@ -72,16 +73,7 @@ export default class BB_DiscordServerRestart extends DiscordBasePlugin {
 
   async onNewGame(info) {
     if(info.layerClassname === this.options.restart_map){
-
-      this.verbose(
-        1,
-        `Initiating regular restart on Restart Map.`
-      );
-      clearInterval(this.preBroadcastInterval);
-      this.broadcast();
-      this.interval = setInterval(this.broadcast, 1000);
-      await this.kickAllPlayers();
-      this.killServer();
+      await initiateRestart(`Initiating regular restart on Restart Map.`);
     } else {
       const currentTime = new Date();
       if(this.server.nextLayer?.layerid != this.options.restart_map &&
@@ -96,35 +88,8 @@ export default class BB_DiscordServerRestart extends DiscordBasePlugin {
             this.preBroadcast();
             this.preBroadcastInterval = setInterval(this.preBroadcast, 3 * 60 * 1000);
           }
-          this.server.rcon.setNextLayer(this.options.restart_map);
+          await this.server.rcon.setNextLayer(this.options.restart_map);
       }
-    }
-  }
-
-  async killServer() {
-    clearInterval(this.interval);
-    clearInterval(this.preBroadcastInterval);
-    delete this.preBroadcastInterval;
-    this.interval?.unref();
-    this.timeout?.unref();
-    await this.server.rcon.killServer();
-  }
-
-  async broadcast() {
-    await this.server.rcon.broadcast("Restarting Server now. Please reconnect through Server Browser: BB | BloodBound");
-  }
-
-  async preBroadcast() {
-    this.verbose(
-      1,
-      `Broadcasting pre-restart meassage.`
-    );
-    await this.server.rcon.broadcast("We have to restart the server after this round. Make sure to 'show empty' servers in filter <3 BB | BloodBound");
-  }
-
-  async onPlayerConnected(info) {
-    if(this.server.currentLayer.layerid === this.options.restart_map){
-      this.server.rcon.kick(info.steamID,"Restarting Server. Please find BB | in server browser to connect. Reconnect Button is broken.");
     }
   }
 
@@ -148,16 +113,48 @@ export default class BB_DiscordServerRestart extends DiscordBasePlugin {
       return;
 
     if(this.server.players?.length <= 20) {
-      this.verbose(
-        1,
-        `Initiating restart immediately due to low Player count.`
-      );
-      this.interval = setInterval(this.broadcast, 1000);
-
-      await this.kickAllPlayers();
-      this.killServer();
+      await initiateRestart(`Initiating restart immediately due to low Player count.`);
     }
   }
+
+  async initiateRestart (message) {
+    this.verbose(1, message);
+    clearInterval(this.preBroadcastInterval);
+    delete this.preBroadcastInterval;
+    this.preBroadcastInterval?.unref();
+    this.broadcast();
+    this.interval = setInterval(this.broadcast, 1000);
+
+    await this.kickAllPlayers();
+    await this.killServer();
+  }
+
+  async killServer() {
+    clearInterval(this.interval);
+    this.interval?.unref();
+    this.timeout?.unref();
+    await this.server.rcon.killServer();
+  }
+
+  async broadcast() {
+    await this.server.rcon.broadcast("Restarting Server now. Please reconnect through Server Browser: BB | BloodBound");
+  }
+
+  async preBroadcast() {
+    this.verbose(
+      1,
+      `Broadcasting pre-restart meassage.`
+    );
+    await this.server.rcon.broadcast("We have to restart the server after this round. Make sure to 'show empty' servers in filter <3 BB | BloodBound");
+  }
+
+  async onPlayerConnected(info) {
+    if(this.server.currentLayer.layerid === this.options.restart_map){
+      this.server.rcon.kick(info.steamID,"Restarting Server. Please find BB | in server browser to connect. Reconnect Button is broken.");
+    }
+  }
+
+
 
   async kickAllPlayers() {
     let kickPromises = [];
