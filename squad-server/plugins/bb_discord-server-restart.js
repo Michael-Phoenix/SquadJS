@@ -126,7 +126,7 @@ export default class BB_DiscordServerRestart extends DiscordBasePlugin {
 
   async checkEmptyRestart() {
     const currentTime = new Date();
-    if(!this.preBroadcastInterval && this.server.nextLayer?.layerid === this.options.restart_map) this.preBroadcastInterval = setInterval(this.preBroadcast, 3 * 60 * 1000);
+    if(!this.preBroadcastInterval && this.server.nextLayer?.layerid === this.options.restart_map && this.server.currentLayer.layerid != this.options.restart_map) this.preBroadcastInterval = setInterval(this.preBroadcast, 3 * 60 * 1000);
     this.verbose(
       1,
       `NextLayer: ${this.server.nextLayer?.classname} (layerid ${this.server.nextLayer?.layerid}), preBroadCast: ${this.preBroadcastInterval}, checking for restart at : ${currentTime.toISOString()} ${currentTime.getTime()} Server Restart Time: ${this.server.lastRestartTime} Time since last restart: ${(currentTime.getTime() - this.server.lastRestartTime) / (1000 * 3600)}`
@@ -146,17 +146,19 @@ export default class BB_DiscordServerRestart extends DiscordBasePlugin {
       this.interval = setInterval(this.broadcast, 1000);
 
       await this.kickAllPlayers();
-      this.timeout = setTimeout(this.killServer, 1000);
+      this.killServer();
     }
   }
 
   async kickAllPlayers() {
-    for(let player of this.server.players) {
+    let kickPromises = [];
+    for(const player of this.server.players) {
       this.verbose(
         1,
         `Kicking player ${player.name} with restart meassage.`
       );
-      await this.server.rcon.kick(player.steamID,"Restarting Server. Please find BB | in server browser to connect. Reconnect Button is broken.");
+      kickPromises.push(await this.server.rcon.kick(player.steamID,"Restarting Server. Please find BB | in server browser to connect. Reconnect Button is broken."));
     }
+    return Promise.all(kickPromises);
   }
 }
