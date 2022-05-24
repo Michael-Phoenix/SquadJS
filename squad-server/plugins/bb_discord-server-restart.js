@@ -73,7 +73,7 @@ export default class BB_DiscordServerRestart extends DiscordBasePlugin {
 
   async onNewGame(info) {
     if(info.layerClassname === this.options.restart_map){
-      await initiateRestart(`Initiating regular restart on Restart Map.`);
+      await this.initiateRestart(`Initiating regular restart on Restart Map.`);
     } else {
       const currentTime = new Date();
       if(this.server.nextLayer?.layerid != this.options.restart_map &&
@@ -113,7 +113,7 @@ export default class BB_DiscordServerRestart extends DiscordBasePlugin {
       return;
 
     if(this.server.players?.length <= 20) {
-      await initiateRestart(`Initiating restart immediately due to low Player count.`);
+      await this.initiateRestart(`Initiating restart immediately due to low Player count.`);
     }
   }
 
