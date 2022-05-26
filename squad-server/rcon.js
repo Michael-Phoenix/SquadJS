@@ -201,4 +201,8 @@ export default class SquadRcon extends Rcon {
   async setNextLayer(layer) {
     await this.execute(`AdminSetNextLayer "${layer}"`);
   }
+
+  async endMatch() {
+    await this.execute(`AdminEndMatch`);
+  }
 }
