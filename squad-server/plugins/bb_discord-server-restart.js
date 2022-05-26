@@ -51,6 +51,7 @@ export default class BB_DiscordServerRestart extends DiscordBasePlugin {
     this.onNewGame = this.onNewGame.bind(this);
     this.checkEmptyRestart = this.checkEmptyRestart.bind(this);
     this.initiateRestart = this.initiateRestart.bind(this);
+    this.queueRestart = this.queueRestart.bind(this);
     this.killServer = this.killServer.bind(this);
     this.preBroadcast = this.preBroadcast.bind(this);
     this.broadcast = this.broadcast.bind(this);
@@ -73,22 +74,14 @@ export default class BB_DiscordServerRestart extends DiscordBasePlugin {
 
   async onNewGame(info) {
     if(info.layerClassname === this.options.restart_map){
-      await this.initiateRestart(`Initiating regular restart on Restart Map.`);
+      await this.initiateRestart(`Initiating restart on Restart Map.`);
     } else {
       const currentTime = new Date();
       if(this.server.nextLayer?.layerid != this.options.restart_map &&
         (currentTime.getTime() - this.server.lastRestartTime) / (1000 * 3600) >= this.options.time_between_restarts &&
         (currentTime.getUTCHours() >= this.options.restart_start &&
         currentTime.getUTCHours() < this.options.restart_end)) {
-          this.verbose(
-            1,
-            `Queueing up Restart Map.`
-          );
-          if(!this.preBroadcastInterval) {
-            this.preBroadcast();
-            this.preBroadcastInterval = setInterval(this.preBroadcast, 3 * 60 * 1000);
-          }
-          await this.server.rcon.setNextLayer(this.options.restart_map);
+          await this.queueRestart();
       }
     }
   }
@@ -113,7 +106,8 @@ export default class BB_DiscordServerRestart extends DiscordBasePlugin {
       return;
 
     if(this.server.players?.length <= 20) {
-      await this.initiateRestart(`Initiating restart immediately due to low Player count.`);
+      await this.queueRestart();
+      await this.server.rcon.endMatch();
     }
   }
 
@@ -127,6 +121,18 @@ export default class BB_DiscordServerRestart extends DiscordBasePlugin {
 
     await this.kickAllPlayers();
     await this.killServer();
+  }
+  async queueRestart() {
+    this.verbose(
+      1,
+      `Queueing up Restart Map.`
+    );
+    if(!this.preBroadcastInterval) {
+      this.preBroadcast();
+      this.preBroadcastInterval = setInterval(this.preBroadcast, 3 * 60 * 1000);
+    }
+    await this.server.rcon.setNextLayer(this.options.restart_map);
+
   }
 
   async killServer() {
