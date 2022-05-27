@@ -36,7 +36,7 @@ export default class BB_DiscordServerRestart extends DiscordBasePlugin {
       time_between_restarts: {
         required: false,
         description: 'Time that has to be passed since last server (re)start until we attempt another restart.',
-        default: 3
+        default: 8
       },
       restart_map: {
         required: false,
