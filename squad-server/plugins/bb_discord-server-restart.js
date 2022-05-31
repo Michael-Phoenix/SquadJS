@@ -36,7 +36,7 @@ export default class BB_DiscordServerRestart extends DiscordBasePlugin {
       time_between_restarts: {
         required: false,
         description: 'Time that has to be passed since last server (re)start until we attempt another restart.',
-        default: 3
+        default: 8
       },
       restart_map: {
         required: false,
@@ -137,7 +137,9 @@ export default class BB_DiscordServerRestart extends DiscordBasePlugin {
 
   async killServer() {
     clearInterval(this.interval);
+    clearInterval(this.preBroadcastInterval);
     this.interval?.unref();
+    this.preBroadcastInterval?.unref();
     this.timeout?.unref();
     await this.server.rcon.killServer();
   }
@@ -151,6 +153,7 @@ export default class BB_DiscordServerRestart extends DiscordBasePlugin {
       1,
       `Broadcasting pre-restart meassage.`
     );
+    if(this.server.)
     await this.server.rcon.broadcast("We have to restart the server after this round. Make sure to 'show empty' servers in filter <3 BB | BloodBound");
   }
 
