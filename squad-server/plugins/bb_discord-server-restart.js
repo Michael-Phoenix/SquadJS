@@ -153,7 +153,6 @@ export default class BB_DiscordServerRestart extends DiscordBasePlugin {
       1,
       `Broadcasting pre-restart meassage.`
     );
-    if(this.server.)
     await this.server.rcon.broadcast("We have to restart the server after this round. Make sure to 'show empty' servers in filter <3 BB | BloodBound");
   }
 
