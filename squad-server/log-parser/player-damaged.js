@@ -3,7 +3,7 @@ export default {
     /^\[([0-9.:-]+)]\[([ 0-9]*)]LogSquad: Player:(.+) ActualDamage=([0-9.]+) from (.+) caused by (([A-z_0-9]+)_C_[0-9]+)/,
 
   onMatch: (args, logParser) => {
-    const data = {
+    let data = {
       raw: args[0],
       time: args[1],
       chainID: args[2],
