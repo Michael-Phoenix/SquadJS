@@ -12,6 +12,7 @@ export default {
           chainID: args[2],
           victimName: args[3]
         };
+        delete logParser.eventStore.matchData["nullptr"];
       } else {
         delete logParser.eventStore.matchData["nullptr"];
       }
