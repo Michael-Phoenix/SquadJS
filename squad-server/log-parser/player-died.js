@@ -2,7 +2,7 @@ export default {
   regex:
     /^\[([0-9.:-]+)]\[([ 0-9]*)]LogSquadTrace: \[DedicatedServer](?:ASQSoldier::)?Die\(\): Player:(.+) KillingDamage=(?:-)*([0-9.]+) from ([A-z_0-9]+) caused by (([A-z_0-9]+)_C_[0-9]+)/,
   onMatch: (args, logParser) => {
-    const data = {
+    let data = {
       ...logParser.eventStore.matchData[args[3]],
       raw: args[0],
       time: args[1],
@@ -15,7 +15,7 @@ export default {
     };
     if(data.victimName === "nullptr") {
       data.delayWoundedCall = true;
-    } 
+    }
 
     logParser.eventStore.matchData[args[3]] = data;
 
