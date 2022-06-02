@@ -18,7 +18,7 @@ export default {
       }
     } else {
       data = {
-        ...logParser.eventStore.matchData[args[3]],
+        ...logParser.eventStore.matchData[args[4]],
         raw: args[0],
         time: args[1],
         chainID: args[2],
