@@ -13,6 +13,7 @@ export default {
           instagib: (args[3] == 10?true:false),
           victimName: args[4]
         };
+        delete logParser.eventStore.matchData["nullptr"];
       } else {
         delete logParser.eventStore.matchData["nullptr"];
       }
