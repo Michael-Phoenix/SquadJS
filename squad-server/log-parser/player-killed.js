@@ -2,6 +2,7 @@ export default {
   //[2022.05.31-22.44.02:917][735]LogSquadScorePoints: Verbose: ScorePointsDelayed: Points: 10.000000 ScoreEvent: Killed
   regex: /^\[([0-9.:-]+)\]\[([ 0-9]*)\]LogSquadScorePoints: Verbose: ScorePointsDelayed: Points: ([0-9]+\.).* ScoreEvent: Killed (.*)$/,
   onMatch: (args, logParser) => {
+    Logger.verbose('LogParser', 3, `KILL was found.`);
     if(logParser.eventStore.matchData["nullptr"]) {
       if(logParser.eventStore.matchData["nullptr"].time.getTime() >= args[1].getTime() - 1000){
         const data = {

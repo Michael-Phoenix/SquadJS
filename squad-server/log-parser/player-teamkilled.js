@@ -2,7 +2,7 @@ export default {
   //[2022.04.09-21.07.47:205][355]LogSquadScorePoints: Verbose: ScorePointsDelayed: Points: -2.000000 ScoreEvent: TeamKilled Mrlegoface
   regex: /^\[([0-9.:-]+)\]\[([ 0-9]*)\]LogSquadScorePoints: Verbose: ScorePointsDelayed: Points: .* ScoreEvent: TeamKilled (.*)$/,
   onMatch: (args, logParser) => {
-
+  Logger.verbose('LogParser', 3, `TEAMKILL was found.`);
 
   if(logParser.eventStore.matchData["nullptr"]) {
     if(logParser.eventStore.matchData["nullptr"].time.getTime() >= args[1].getTime() - 1000){
