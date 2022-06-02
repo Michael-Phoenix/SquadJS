@@ -2,6 +2,7 @@ export default {
   //[2022.06.01-00.56.31:581][635]LogSquad: Warning: Suicide Papi
   regex: /^\[([0-9.:-]+)\]\[([ 0-9]*)\]LogSquad: Warning: Suicide (.*)$/,
   onMatch: (args, logParser) => {
+    Logger.verbose('LogParser', 3, `SUICIDE was found.`);
     if(logParser.eventStore.matchData["nullptr"]) {
       if(logParser.eventStore.matchData["nullptr"].time.getTime() >= args[1].getTime() - 1000){
         const data = {
