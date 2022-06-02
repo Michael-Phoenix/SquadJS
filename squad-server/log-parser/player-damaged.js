@@ -15,10 +15,10 @@ export default {
       previous: [args[0]]
     };
     if(data.victimName === "nullptr") {
-      data.delayWoundedCall = true;
+      data.delayDamagedCall = true;
     }
     logParser.eventStore.matchData[args[3]] = data;
 
-    if(data.victimName != "nullptr") logParser.emit('PLAYER_DAMAGED', data);
+    if(!data.delayDamagedCall) logParser.emit('PLAYER_DAMAGED', data);
   }
 };

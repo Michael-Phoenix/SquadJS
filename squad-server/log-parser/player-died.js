@@ -14,13 +14,13 @@ export default {
       weapon: args[7]
     };
     if(data.victimName === "nullptr") {
-      data.delayWoundedCall = true;
+      data.delayDiedCall = true;
     }
 
     logParser.eventStore.matchData[args[3]] = data;
 
     // logParser.eventStore[args[3]] = data;
 
-    if(data.victimName != "nullptr") logParser.emit('PLAYER_DIED', data);
+    if(!data.delayDiedCall) logParser.emit('PLAYER_DIED', data);
   }
 };
