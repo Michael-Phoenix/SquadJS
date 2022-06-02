@@ -4,7 +4,7 @@ export default {
   onMatch: (args, logParser) => {
     let data = {};
     if(logParser.eventStore.matchData["nullptr"]) {
-      if(logParser.eventStore.matchData["nullptr"].time.getTime() >= args[1].getTime() - 1000){
+      if(logParser.eventStore.matchData["nullptr"].time.getTime() >= args[1].getTime() - 100){
         data = {
           ...logParser.eventStore.matchData["nullptr"],
           raw: args[0],
