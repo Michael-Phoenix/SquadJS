@@ -299,23 +299,78 @@ export default class SquadServer extends EventEmitter {
       delete data.attackerName;
 
       this.emitProxy('PLAYER_WOUNDED', data);
-      if (data.teamkill) this.emitProxy('TEAMKILL', data);
+      //if (data.teamkill) this.emitProxy('TEAMKILL', data);
+    });
+
+    this.logParser.on('TEAMKILL', async (data) => {
+      Logger.verbose('LogParser', 3, `TEAMKILL was called.`);
+      data.victim = await this.getPlayerByName(data.victimName);
+
+      data.attacker = await this.getPlayerByName(data.attackerName);
+      if(!data.attacker && data.attackerPlayerController) data.attacker = await this.getPlayerByController(data.attackerPlayerController);
+
+      Logger.verbose('LogParser', 3, `Victim Name: ${data.victimName}, Attacker Name: ${data.attackerName}, FoundVictim Name: ${data.victim?.name}, FoundAttacker Name: ${data.attacker?.name}`);
+      if (data.victim && data.attacker)
+        data.teamkill = true;
+
+      delete data.victimName;
+      delete data.attackerName;
+
+      this.emitProxy('TEAMKILL', data);
+
+    });
+
+    this.logParser.on('SUICIDE', async (data) => {
+      Logger.verbose('LogParser', 3, `SUICIDE was called.`);
+      data.victim = await this.getPlayerByName(data.victimName);
+
+      data.attacker = await this.getPlayerByName(data.attackerName);
+      if(!data.attacker && data.attackerPlayerController) data.attacker = await this.getPlayerByController(data.attackerPlayerController);
+
+      Logger.verbose('LogParser', 3, `Victim Name: ${data.victimName}, Attacker Name: ${data.attackerName}, FoundVictim Name: ${data.victim?.name}, FoundAttacker Name: ${data.attacker?.name}`);
+      if (data.victim && data.attacker)
+        data.teamkill = false;
+
+      delete data.victimName;
+      delete data.attackerName;
+
+      this.emitProxy('SUICIDE', data);
+
+    });
+
+    this.logParser.on('KILL', async (data) => {
+      Logger.verbose('LogParser', 3, `KILL was called.`);
+      data.victim = await this.getPlayerByName(data.victimName);
+
+      data.attacker = await this.getPlayerByName(data.attackerName);
+      if(!data.attacker && data.attackerPlayerController) data.attacker = await this.getPlayerByController(data.attackerPlayerController);
+
+      Logger.verbose('LogParser', 3, `Victim Name: ${data.victimName}, Attacker Name: ${data.attackerName}, FoundVictim Name: ${data.victim?.name}, FoundAttacker Name: ${data.attacker?.name}`);
+      if (data.victim && data.attacker)
+        data.teamkill = false;
+
+      delete data.victimName;
+      delete data.attackerName;
+
+      this.emitProxy('KILL', data);
+
     });
 
     this.logParser.on('PLAYER_DIED', async (data) => {
       data.victim = await this.getPlayerByName(data.victimName);
-      //if(!data.victim) data.victim = await this.getPlayerByPlayerController(data.victimName);
+      //if(!data.victim) data.victim = await this.getPlayerByController(data.victimName);
       if(!data.attacker) data.attacker = await this.getPlayerByController(data.attackerPlayerController);
 
       if (data.victim && data.attacker)
         data.teamkill =
           data.victim.teamID === data.attacker.teamID &&
+          data.attacker.steamID && data.victim.steamID &&
           data.victim.steamID !== data.attacker.steamID;
 
       delete data.victimName;
       delete data.attackerName;
-
       this.emitProxy('PLAYER_DIED', data);
+      //if(!data.woundedWasCalled && data.teamkill) this.emitProxy('TEAMKILL', data);
     });
 
     this.logParser.on('PLAYER_REVIVED', async (data) => {
@@ -550,7 +605,9 @@ export default class SquadServer extends EventEmitter {
     if (!forceUpdate || this.syncData) {
       matches = this.players.filter(condition);
       if (matches.length === 1) return matches[0];
-
+      if(matches.length > 1) {
+        Logger.verbose('LogParser', 1, `Warning: getPlayerByCondition() Found more than one player on match: ${JSON.stringify(matches)}`);
+      }
       if (!retry || this.syncData) return null;
     }
 
