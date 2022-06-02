@@ -10,14 +10,13 @@ export default {
       victimName: args[3],
       damage: parseFloat(args[4]),
       attackerPlayerController: args[5],
-      weapon: args[7],
-      woundedWasCalled : true
+      weapon: args[7]
     };
-
-    if (data.victimName !== 'nullptr') {
-      logParser.eventStore.matchData[args[3]] = data;
+    if(data.victimName === "nullptr") {
+      data.delayWoundedCall = true;
     }
+    logParser.eventStore.matchData[args[3]] = data;
 
-    logParser.emit('PLAYER_WOUNDED', data);
+    if(data.victimName != "nullptr") logParser.emit('PLAYER_WOUNDED', data);
   }
 };

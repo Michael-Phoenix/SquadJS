@@ -14,10 +14,11 @@ export default {
       weaponPawn: args[6],
       previous: [args[0]]
     };
-
-    if (data.victimName !== 'nullptr') {
-      logParser.eventStore.matchData[args[3]] = data;
+    if(data.victimName === "nullptr") {
+      data.delayWoundedCall = true;
     }
-    logParser.emit('PLAYER_DAMAGED', data);
+    logParser.eventStore.matchData[args[3]] = data;
+
+    if(data.victimName != "nullptr") logParser.emit('PLAYER_DAMAGED', data);
   }
 };

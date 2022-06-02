@@ -38,14 +38,17 @@ export default class BB_DiscordTeamkill extends DiscordBasePlugin {
     super(server, options, connectors);
 
     this.onTeamkill = this.onTeamkill.bind(this);
+    this.onSuicide = this.onSuicide.bind(this);
   }
 
   async mount() {
     this.server.on('TEAMKILL', this.onTeamkill);
+    this.server.on('SUICIDE', this.onSuicide);
   }
 
   async unmount() {
     this.server.removeEventListener('TEAMKILL', this.onTeamkill);
+    this.server.removeEventListener('SUICIDE', this.onSuicide);
   }
 
   async onTeamkill(info) {
@@ -105,5 +108,11 @@ export default class BB_DiscordTeamkill extends DiscordBasePlugin {
         }
       }
     });*/
+  }
+  async onSuicide(info) {
+    if (!info.attacker) return;
+    await this.sendDiscordMessage(` \`\`\`python
+[${info.time.toISOString()}] SUICIDE ${info.attacker.steamID}:"${info.attacker.name}" commited Sudoku using "${info.weapon}"\`\`\` `)
+
   }
 }

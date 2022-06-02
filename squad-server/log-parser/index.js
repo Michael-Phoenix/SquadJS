@@ -22,6 +22,8 @@ import clientConnected from './client-connected.js';
 import clientLogin from './client-login.js';
 import pendingConnectionDestroyed from './pending-connection-destroyed.js';
 import ServerStart from './server-start.js';
+import PlayerKilled from './player-killed.js';
+import PlayerSuicided from './player-suicided.js';
 export default class SquadLogParser extends LogParser {
   constructor(options) {
     super('SquadGame.log', options);
@@ -50,7 +52,9 @@ export default class SquadLogParser extends LogParser {
       clientConnected,
       clientLogin,
       pendingConnectionDestroyed,
-      ServerStart
+      ServerStart,
+      PlayerKilled,
+      PlayerSuicided
     ];
   }
 }

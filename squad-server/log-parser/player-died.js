@@ -13,13 +13,14 @@ export default {
       attackerPlayerController: args[5],
       weapon: args[7]
     };
+    if(data.victimName === "nullptr") {
+      data.delayWoundedCall = true;
+    } 
 
-    if (data.victimName !== 'nullptr') {
-      delete logParser.eventStore.matchData[args[3]];
-    }
+    logParser.eventStore.matchData[args[3]] = data;
 
     // logParser.eventStore[args[3]] = data;
 
-    logParser.emit('PLAYER_DIED', data);
+    if(data.victimName != "nullptr") logParser.emit('PLAYER_DIED', data);
   }
 };
