@@ -17,6 +17,6 @@ export default {
     }
     logParser.eventStore.matchData[args[3]] = data;
 
-    if(data.victimName != "nullptr") logParser.emit('PLAYER_WOUNDED', data);
+    if(!data.delayWoundedCall) logParser.emit('PLAYER_WOUNDED', data);
   }
 };
