@@ -90,7 +90,8 @@ export default class BB_DiscordServerRestart extends DiscordBasePlugin {
     const currentTime = new Date();
     if(!this.preBroadcastInterval &&
       this.server.nextLayer?.layerid === this.options.restart_map &&
-      this.server.currentLayer.layerid != this.options.restart_map) {
+      this.server.currentLayer.layerid != this.options.restart_map &&
+      (currentTime.getTime() - this.server.lastRestartTime) / (1000 * 3600) >= this.options.time_between_restarts) {
         this.preBroadcast();
         this.preBroadcastInterval = setInterval(this.preBroadcast, 3 * 60 * 1000);
     }
