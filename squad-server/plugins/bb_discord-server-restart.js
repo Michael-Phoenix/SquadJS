@@ -140,6 +140,7 @@ export default class BB_DiscordServerRestart extends DiscordBasePlugin {
     clearInterval(this.interval);
     clearInterval(this.preBroadcastInterval);
     this.interval?.unref();
+    delete this.preBroadcastInterval;
     this.preBroadcastInterval?.unref();
     this.timeout?.unref();
     await this.server.rcon.killServer();
