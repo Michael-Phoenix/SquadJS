@@ -119,8 +119,11 @@ export default class BB_DiscordServerRestart extends DiscordBasePlugin {
     this.preBroadcastInterval?.unref();
     this.broadcast();
     this.interval = setInterval(this.broadcast, 1000);
-
-    await this.kickAllPlayers();
+    try{
+      await this.kickAllPlayers();
+    } catch(e) {
+      this.verbose(1, `error in kickAllPlayers:`, e);
+    }
     await this.killServer();
   }
   async queueRestart() {
@@ -175,6 +178,6 @@ export default class BB_DiscordServerRestart extends DiscordBasePlugin {
       );
       kickPromises.push(await this.server.rcon.kick(player.steamID,"Restarting Server. Please find BB | in server browser to connect. Reconnect Button is broken."));
     }
-    return Promise.all(kickPromises);
+    return await Promise.all(kickPromises);
   }
 }
