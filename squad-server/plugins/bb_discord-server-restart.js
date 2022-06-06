@@ -110,6 +110,10 @@ export default class BB_DiscordServerRestart extends DiscordBasePlugin {
       await this.queueRestart();
       await this.server.rcon.endMatch();
     }
+
+    if(this.server.players?.length == 0) {
+      await this.killServer();
+    }
   }
 
   async initiateRestart (message) {
@@ -154,11 +158,13 @@ export default class BB_DiscordServerRestart extends DiscordBasePlugin {
   }
 
   async preBroadcast() {
-    this.verbose(
-      1,
-      `Broadcasting pre-restart meassage.`
-    );
-    await this.server.rcon.broadcast("We have to restart the server after this round. Make sure to 'show empty' servers in filter <3 BB | BloodBound");
+    if(this.server.nextLayer?.layerid === this.options.restart_map){
+      this.verbose(
+        1,
+        `Broadcasting pre-restart meassage.`
+      );
+      await this.server.rcon.broadcast("We have to restart the server after this round. Make sure to 'show empty' servers in filter <3 BB | BloodBound");
+    }
   }
 
   async onPlayerConnected(info) {
