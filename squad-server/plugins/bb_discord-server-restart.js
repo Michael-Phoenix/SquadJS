@@ -174,7 +174,7 @@ export default class BB_DiscordServerRestart extends DiscordBasePlugin {
     }
   }
 
-  function doSleep(ms) {
+  async doSleep(ms) {
     return new Promise(resolve => setTimeout(resolve, ms));
   }
 
