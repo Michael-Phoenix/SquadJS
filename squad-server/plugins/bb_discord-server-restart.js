@@ -107,9 +107,9 @@ export default class BB_DiscordServerRestart extends DiscordBasePlugin {
       this.server.nextLayer?.layerid === this.options.restart_map)
       return;
 
-    if(this.server.players?.length <= 20) {
+    if(this.server.players?.length <= 40) {
       await this.queueRestart();
-      await this.server.rcon.endMatch();
+      //await this.server.rcon.endMatch();
     }
 
     if(this.server.players?.length == 0) {
@@ -173,7 +173,6 @@ export default class BB_DiscordServerRestart extends DiscordBasePlugin {
       this.server.rcon.kick(info.steamID,"Restarting Server. Please find BB | in server browser to connect. Reconnect Button is broken.");
     }
   }
-
   async doSleep(ms) {
     return new Promise(resolve => setTimeout(resolve, ms));
   }
@@ -187,7 +186,7 @@ export default class BB_DiscordServerRestart extends DiscordBasePlugin {
       );
       kickPromises.push(await this.server.rcon.kick(player.steamID,"Restarting Server. Please find BB | in server browser to connect. Reconnect Button is broken."));
     }
-    kickPromises.push(await this.doSleep(20000));
+    kickPromises.push(await this.doSleep(10000));
     return await Promise.all(kickPromises);
   }
 }
