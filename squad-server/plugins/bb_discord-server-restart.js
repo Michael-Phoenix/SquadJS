@@ -179,14 +179,21 @@ export default class BB_DiscordServerRestart extends DiscordBasePlugin {
 
   async kickAllPlayers() {
     let kickPromises = [];
+    this.verbose(
+      1,
+      `Start Kicking ${this.server.players.length} players with restart meassage. `
+    );
     for(const player of this.server.players) {
       this.verbose(
         1,
         `Kicking player ${player.name} with restart meassage.`
       );
-      kickPromises.push(await this.server.rcon.kick(player.steamID,"Restarting Server. Please find BB | in server browser to connect. Reconnect Button is broken."));
+      this.server.rcon.kick(player.steamID,"Restarting Server. Please find BB | in server browser to connect. Reconnect Button is broken.");
     }
-    kickPromises.push(await this.doSleep(10000));
-    return await Promise.all(kickPromises);
+    this.verbose(
+      1,
+      `Finished Kicking players with restart meassage.`
+    );
+    return await this.doSleep(10000);
   }
 }
