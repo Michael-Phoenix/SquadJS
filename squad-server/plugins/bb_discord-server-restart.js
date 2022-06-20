@@ -178,7 +178,10 @@ export default class BB_DiscordServerRestart extends DiscordBasePlugin {
   }
 
   async kickAllPlayers() {
-    let kickPromises = [];
+    if(this.server.players.length === 0) {
+      await this.doSleep(5000);
+    }
+
     this.verbose(
       1,
       `Start Kicking ${this.server.players.length} players with restart meassage. `
@@ -194,6 +197,6 @@ export default class BB_DiscordServerRestart extends DiscordBasePlugin {
       1,
       `Finished Kicking players with restart meassage.`
     );
-    return await this.doSleep(10000);
+    return await this.doSleep(5000);
   }
 }
