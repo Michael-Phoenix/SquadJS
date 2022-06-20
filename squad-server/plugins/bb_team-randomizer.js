@@ -135,14 +135,6 @@ export default class BB_TeamRandomizer extends DiscordBasePlugin {
       embed: {
         title: 'Team Randomize order executed on layer change.',
         color: this.options.color,
-        fields: [
-          {
-            name: 'Requested by',
-            value: `[${info.player.name}](https://www.battlemetrics.com/rcon/players?filter%5Bsearch%5D=${info.player.steamID})`,
-            inline: true
-          }
-
-        ],
         timestamp: info.time.toISOString()
       }
     });
