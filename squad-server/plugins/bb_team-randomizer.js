@@ -1,6 +1,6 @@
 import DiscordBasePlugin from './discord-base-plugin.js';
 
-export default class BB_TeamRandomizer extends BasePlugin {
+export default class BB_TeamRandomizer extends DiscordBasePlugin {
   static get description() {
     return (
       "The <code>BB_TeamRandomizer</code> can be used to randomize teams. It's great for destroying clan stacks or for " +
@@ -14,6 +14,18 @@ export default class BB_TeamRandomizer extends BasePlugin {
 
   static get optionsSpecification() {
     return {
+      ...DiscordBasePlugin.optionsSpecification,
+      channelID: {
+        required: true,
+        description: 'The ID of the channel to log admin broadcasts to.',
+        default: '',
+        example: '972418614894420008'
+      },
+      color: {
+        required: false,
+        description: 'The color of the embed.',
+        default: 16761867
+      },
       command: {
         required: false,
         description: 'The command used to randomize the teams.',
@@ -43,8 +55,23 @@ export default class BB_TeamRandomizer extends BasePlugin {
     if (info.chat !== 'ChatAdmin') return;
     this.verbose(
       1,
-      `Player requesting shuffle: ${info.player} Last : ${this.server.layerHistory[0].time.toISOString()} ${currentTime.getTime()} Server Restart Time: ${this.server.lastRestartTime} Time since last restart: ${(currentTime.getTime() - this.server.lastRestartTime) / (1000 * 3600)}`
+      `Player requesting shuffle: ${info.player.name} Last : ${this.server.layerHistory[0].time.toISOString()}`
     );
+    await this.sendDiscordMessage({
+      embed: {
+        title: 'Randomize requested',
+        color: this.options.color,
+        fields: [
+          {
+            name: 'Requested by',
+            value: `[${info.player.name}](https://www.battlemetrics.com/rcon/players?filter%5Bsearch%5D=${info.player.steamID})`,
+            inline: true
+          }
+
+        ],
+        timestamp: info.time.toISOString()
+      }
+    });
     if(this.server.pluginData?.shuffleOnNextMap) {
           await this.server.rcon.warn(info.player.steamID, "Shuffling cancelled");
           if(!this.server.pluginData) this.server.pluginData = {};
@@ -58,7 +85,7 @@ export default class BB_TeamRandomizer extends BasePlugin {
       if(!this.server.pluginData) this.server.pluginData = {};
       this.server.pluginData.shuffleOnNextMap = true;
     }
-    
+
   }
 
   async onNewGame(info) {
