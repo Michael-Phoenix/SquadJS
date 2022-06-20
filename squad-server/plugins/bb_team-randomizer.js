@@ -50,10 +50,12 @@ export default class BB_TeamRandomizer extends DiscordBasePlugin {
 
   async mount() {
     this.server.on(`CHAT_COMMAND:${this.options.command}`, this.onChatCommand);
+    this.server.on('NEW_GAME', this.onNewGame);
   }
 
   async unmount() {
     this.server.removeEventListener(`CHAT_COMMAND:${this.options.command}`, this.onChatCommand);
+    this.server.removeEventListener('NEW_GAME', this.onNewGame);
   }
 
   async onChatCommand(info) {
