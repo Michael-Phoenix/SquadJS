@@ -83,7 +83,7 @@ export default class BB_TeamRandomizer extends DiscordBasePlugin {
           });
           return;
     }
-    
+
     if (Date.now() <= this.server.layerHistory[0].time.getTime() + 1000*60*this.options.gracePeriod) { //1000*60 = Minutes
       await this.server.rcon.warn(info.player.steamID, "Shuffling immediately");
       await this.sendDiscordMessage({
@@ -101,12 +101,12 @@ export default class BB_TeamRandomizer extends DiscordBasePlugin {
           timestamp: info.time.toISOString()
         }
       });
-      //await this.doShuffle();
+      await this.doShuffle();
     } else {
       await this.server.rcon.warn(info.player.steamID, "Shuffling on next layer change");
       await this.sendDiscordMessage({
         embed: {
-          title: 'Team Randomizer scheduled for round end',
+          title: 'Team Randomizer scheduled for next layer change',
           color: this.options.color,
           fields: [
             {
@@ -144,7 +144,7 @@ export default class BB_TeamRandomizer extends DiscordBasePlugin {
         timestamp: info.time.toISOString()
       }
     });
-    //await this.doShuffle();
+    await this.doShuffle();
   }
 
   async doShuffle() {
