@@ -57,9 +57,76 @@ export default class BB_TeamRandomizer extends DiscordBasePlugin {
       1,
       `Player requesting shuffle: ${info.player.name} Last : ${this.server.layerHistory[0].time.toISOString()}`
     );
+
+    if(this.server.pluginData?.shuffleOnNextMap) {
+          await this.server.rcon.warn(info.player.steamID, "Shuffling cancelled");
+          if(!this.server.pluginData) this.server.pluginData = {};
+          this.server.pluginData.shuffleOnNextMap = false;
+          await this.sendDiscordMessage({
+            embed: {
+              title: 'Team Randomizer cancelled',
+              color: this.options.color,
+              fields: [
+                {
+                  name: 'Requested by',
+                  value: `[${info.player.name}](https://www.battlemetrics.com/rcon/players?filter%5Bsearch%5D=${info.player.steamID})`,
+                  inline: true
+                }
+
+              ],
+              timestamp: info.time.toISOString()
+            }
+          });
+          return;
+    }
+    if (Date.now() <= this.server.layerHistory[0].time.getTime() + 1000*60*1) { //1000*60 = Minutes
+      await this.server.rcon.warn(info.player.steamID, "Shuffling immediately");
+      await this.sendDiscordMessage({
+        embed: {
+          title: 'Team Randomizer Issued Immediately',
+          color: this.options.color,
+          fields: [
+            {
+              name: 'Requested by',
+              value: `[${info.player.name}](https://www.battlemetrics.com/rcon/players?filter%5Bsearch%5D=${info.player.steamID})`,
+              inline: true
+            }
+
+          ],
+          timestamp: info.time.toISOString()
+        }
+      });
+    } else {
+      await this.server.rcon.warn(info.player.steamID, "Shuffling on next layer change");
+      await this.sendDiscordMessage({
+        embed: {
+          title: 'Team Randomizer scheduled for round end',
+          color: this.options.color,
+          fields: [
+            {
+              name: 'Requested by',
+              value: `[${info.player.name}](https://www.battlemetrics.com/rcon/players?filter%5Bsearch%5D=${info.player.steamID})`,
+              inline: true
+            }
+
+          ],
+          timestamp: info.time.toISOString()
+        }
+      });
+      if(!this.server.pluginData) this.server.pluginData = {};
+      this.server.pluginData.shuffleOnNextMap = true;
+    }
+
+  }
+
+  async onNewGame(info) {
+    if(!this.server.pluginData?.shuffleOnNextMap) return;
+    this.server.pluginData.shuffleOnNextMap = false;
+    await this.doSleep(5000);
+    //await this.doShuffle();
     await this.sendDiscordMessage({
       embed: {
-        title: 'Randomize requested',
+        title: 'Team Randomize order executed on layer change.',
         color: this.options.color,
         fields: [
           {
@@ -72,27 +139,6 @@ export default class BB_TeamRandomizer extends DiscordBasePlugin {
         timestamp: info.time.toISOString()
       }
     });
-    if(this.server.pluginData?.shuffleOnNextMap) {
-          await this.server.rcon.warn(info.player.steamID, "Shuffling cancelled");
-          if(!this.server.pluginData) this.server.pluginData = {};
-          this.server.pluginData.shuffleOnNextMap = false;
-          return;
-    }
-    if (Date.now() <= this.server.layerHistory[0].time.getTime() + 1000*60*1) { //1000*60 = Minutes
-      await this.server.rcon.warn(info.player.steamID, "Shuffling immediately");
-    } else {
-      await this.server.rcon.warn(info.player.steamID, "Shuffling on next map change");
-      if(!this.server.pluginData) this.server.pluginData = {};
-      this.server.pluginData.shuffleOnNextMap = true;
-    }
-
-  }
-
-  async onNewGame(info) {
-    if(!this.server.pluginData?.shuffleOnNextMap) return;
-    this.server.pluginData.shuffleOnNextMap = false;
-    await this.doSleep(5000);
-    await this.doShuffle();
   }
 
   async doShuffle() {
