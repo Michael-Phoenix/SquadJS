@@ -9,7 +9,7 @@ export default class ChatCommands extends BasePlugin {
   }
 
   static get defaultEnabled() {
-    return true;
+    return false;
   }
 
   static get optionsSpecification() {

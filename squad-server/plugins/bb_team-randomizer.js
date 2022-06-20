@@ -26,6 +26,11 @@ export default class BB_TeamRandomizer extends DiscordBasePlugin {
         description: 'The color of the embed.',
         default: 16761867
       },
+      gracePeriod: {
+        required: false,
+        description: 'Grace Period after new Game started where we can randomize immediately.',
+        default: '1'
+      },
       command: {
         required: false,
         description: 'The command used to randomize the teams.',
@@ -72,14 +77,14 @@ export default class BB_TeamRandomizer extends DiscordBasePlugin {
                   value: `[${info.player.name}](https://www.battlemetrics.com/rcon/players?filter%5Bsearch%5D=${info.player.steamID})`,
                   inline: true
                 }
-
               ],
               timestamp: info.time.toISOString()
             }
           });
           return;
     }
-    if (Date.now() <= this.server.layerHistory[0].time.getTime() + 1000*60*1) { //1000*60 = Minutes
+    
+    if (Date.now() <= this.server.layerHistory[0].time.getTime() + 1000*60*this.options.gracePeriod) { //1000*60 = Minutes
       await this.server.rcon.warn(info.player.steamID, "Shuffling immediately");
       await this.sendDiscordMessage({
         embed: {
@@ -96,6 +101,7 @@ export default class BB_TeamRandomizer extends DiscordBasePlugin {
           timestamp: info.time.toISOString()
         }
       });
+      //await this.doShuffle();
     } else {
       await this.server.rcon.warn(info.player.steamID, "Shuffling on next layer change");
       await this.sendDiscordMessage({
@@ -123,7 +129,6 @@ export default class BB_TeamRandomizer extends DiscordBasePlugin {
     if(!this.server.pluginData?.shuffleOnNextMap) return;
     this.server.pluginData.shuffleOnNextMap = false;
     await this.doSleep(5000);
-    //await this.doShuffle();
     await this.sendDiscordMessage({
       embed: {
         title: 'Team Randomize order executed on layer change.',
@@ -139,6 +144,7 @@ export default class BB_TeamRandomizer extends DiscordBasePlugin {
         timestamp: info.time.toISOString()
       }
     });
+    //await this.doShuffle();
   }
 
   async doShuffle() {
