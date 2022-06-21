@@ -151,6 +151,13 @@ export default class BB_DiscordServerRestart extends DiscordBasePlugin {
     delete this.preBroadcastInterval;
     this.preBroadcastInterval?.unref();
     this.timeout?.unref();
+    await this.sendDiscordMessage({
+      embed: {
+        title: 'Server is now ready for :seedling:',
+        color: this.options.color,
+        timestamp: info.time.toISOString()
+      }
+    });
     await this.server.rcon.killServer();
   }
 
