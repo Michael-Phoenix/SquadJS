@@ -155,14 +155,14 @@ export default class BB_DiscordServerRestart extends DiscordBasePlugin {
       embed: {
         title: 'Server is now ready for :seedling:',
         color: this.options.color,
-        timestamp: info.time.toISOString()
+        timestamp: new Date().toISOString()
       }
     });
     await this.server.rcon.killServer();
   }
 
   async broadcast() {
-    await this.server.rcon.broadcast("Restarting Server now. Please reconnect through Server Browser: BB | BloodBound");
+    await this.server.rcon.broadcast("Restarting Server now. Please find BB | in server browser to connect. Reconnect Button is broken.");
   }
 
   async preBroadcast() {
@@ -177,17 +177,20 @@ export default class BB_DiscordServerRestart extends DiscordBasePlugin {
 
   async onPlayerConnected(info) {
     if(this.server.currentLayer.layerid === this.options.restart_map){
+      this.verbose(
+        1,
+        `Kicking ${info.steamID} with restart meassage. (onConnect)`
+      );
       this.server.rcon.kick(info.steamID,"Restarting Server. Please find BB | in server browser to connect. Reconnect Button is broken.");
     }
   }
+
   async doSleep(ms) {
     return new Promise(resolve => setTimeout(resolve, ms));
   }
 
   async kickAllPlayers() {
-    if(this.server.players.length === 0) {
-      await this.doSleep(5000);
-    }
+    await this.doSleep(10000);
 
     this.verbose(
       1,
@@ -204,6 +207,6 @@ export default class BB_DiscordServerRestart extends DiscordBasePlugin {
       1,
       `Finished Kicking players with restart meassage.`
     );
-    return await this.doSleep(5000);
+    return await this.doSleep(1000);
   }
 }
