@@ -1,6 +1,6 @@
 export default {
   regex:
-    /^\[([0-9.:-]+)]\[([ 0-9]*)]LogSquadTrace: \[DedicatedServer\]RestartPlayer\(\): On Server PC=(.+) Spawn=(.+) DeployRole=/,
+    /\[([0-9.:-]+)]\[([ 0-9]*)]LogSquadTrace: \[DedicatedServer\]RestartPlayer\(\): On Server PC=(.+) Spawn=(.+) DeployRole=/,
   onMatch: (args, logParser) => {
     const data = {
       raw: args[0],

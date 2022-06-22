@@ -1,6 +1,6 @@
 export default {
   // the names are currently the wrong way around in these logs
-  regex: /^\[([0-9.:-]+)]\[([ 0-9]*)]LogSquad: (.+) has revived (.+)\./,
+  regex: /\[([0-9.:-]+)]\[([ 0-9]*)]LogSquad: (.+) has revived (.+)\./,
   onMatch: (args, logParser) => {
     const data = {
       ...logParser.eventStore[args[4]],

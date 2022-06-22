@@ -1,6 +1,6 @@
 export default {
   //[2022.05.31-22.44.02:917][735]LogSquadScorePoints: Verbose: ScorePointsDelayed: Points: 10.000000 ScoreEvent: Killed
-  regex: /^\[([0-9.:-]+)\]\[([ 0-9]*)\]LogSquadScorePoints: Verbose: ScorePointsDelayed: Points: ([0-9]+\.).* ScoreEvent: Killed (.*)$/,
+  regex: /\[([0-9.:-]+)\]\[([ 0-9]*)\]LogSquadScorePoints: Verbose: ScorePointsDelayed: Points: ([0-9]+\.).* ScoreEvent: Killed (.*)$/,
   onMatch: (args, logParser) => {
     let data = {};
     if(logParser.eventStore.matchData["nullptr"]) {

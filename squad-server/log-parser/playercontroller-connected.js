@@ -1,6 +1,6 @@
 export default {
   regex:
-    /^\[([0-9.:-]+)]\[([ 0-9]*)]LogSquad: PostLogin: NewPlayer: BP_PlayerController_C .+(BP_PlayerController_C_[0-9]+)/,
+    /\[([0-9.:-]+)]\[([ 0-9]*)]LogSquad: PostLogin: NewPlayer: BP_PlayerController_C .+(BP_PlayerController_C_[0-9]+)/,
   onMatch: (args, logParser) => {
     const data = {
       raw: args[0],

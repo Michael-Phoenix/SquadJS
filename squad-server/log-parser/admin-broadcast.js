@@ -1,5 +1,5 @@
 export default {
-  regex: /^\[([0-9.:-]+)]\[([ 0-9]*)]LogSquad: ADMIN COMMAND: Message broadcasted <(.+)> from (.+)/,
+  regex: /\[([0-9.:-]+)]\[([ 0-9]*)]LogSquad: ADMIN COMMAND: Message broadcasted <(.+)> from (.+)/,
   onMatch: (args, logParser) => {
     const data = {
       raw: args[0],

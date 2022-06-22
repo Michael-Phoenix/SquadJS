@@ -1,6 +1,7 @@
 export default {
+  //[2022.06.22-20.53.09:412][ 90]LogSquadTrace: [DedicatedServer]Wound(): Player:*RH* Pantern KillingDamage=180.000000 from BP_PlayerController_C_2147231371 caused by BP_AK74M_1P78_C_2147209352
   regex:
-    /^\[([0-9.:-]+)]\[([ 0-9]*)]LogSquadTrace: \[DedicatedServer](?:ASQSoldier::)?Wound\(\): Player:(.+) KillingDamage=(?:-)*([0-9.]+) from ([A-z_0-9]+) caused by (([A-z_0-9]+)_C_[0-9]+)/,
+    /\[([0-9.:-]+)]\[([ 0-9]*)]LogSquadTrace: \[DedicatedServer](?:ASQSoldier::)?Wound\(\): Player:(.+) KillingDamage=(?:-)*([0-9.]+) from ([A-z_0-9]+) caused by (([A-z_0-9]+)_C_[0-9]+)/,
   onMatch: (args, logParser) => {
     let data = {
       ...logParser.eventStore.matchData[args[3]],

@@ -1,6 +1,6 @@
 export default {
   //[2022.06.01-00.56.31:581][635]LogSquad: Warning: Suicide Papi
-  regex: /^\[([0-9.:-]+)\]\[([ 0-9]*)\]LogSquad: Warning: Suicide (.*)$/,
+  regex: /\[([0-9.:-]+)\]\[([ 0-9]*)\]LogSquad: Warning: Suicide (.*)$/,
   onMatch: (args, logParser) => {
     let data = {};
     if(logParser.eventStore.matchData["nullptr"]) {

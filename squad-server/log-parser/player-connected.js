@@ -1,5 +1,5 @@
 export default {
-  regex: /^\[([0-9.:-]+)]\[([ 0-9]*)]LogNet: Join succeeded: (.+)/,
+  regex: /\[([0-9.:-]+)]\[([ 0-9]*)]LogNet: Join succeeded: (.+)/,
   onMatch: (args, logParser) => {
     const data = {
       ...logParser.eventStore['player-login'],

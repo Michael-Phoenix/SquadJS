@@ -1,5 +1,5 @@
 export default {
-  regex: /^\[([0-9.:-]+)]\[([ 0-9]*)]LogSquad: PostLogin: NewPlayer: BP_PlayerController_C .*:PersistentLevel.(.+)/,
+  regex: /\[([0-9.:-]+)]\[([ 0-9]*)]LogSquad: PostLogin: NewPlayer: BP_PlayerController_C .*:PersistentLevel.(.+)/,
   onMatch: (args, logParser) => {
     const data = {
       ...logParser.eventStore['player-login'],
