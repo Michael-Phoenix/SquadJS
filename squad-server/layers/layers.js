@@ -50,6 +50,7 @@ class Layers {
     //return at least the info we already have
     let layer = this.getLayerByCondition((layer) => layer.name === name);
     if(!layer) {
+      layer = {};
       layer.name = name;
       layer.classname = name.replaceAll(" ", "_");
       layer.layerid = name.replaceAll(" ", "_");
@@ -62,6 +63,7 @@ class Layers {
     //return at least the info we already have
     let layer = this.getLayerByCondition((layer) => layer.classname === classname);
     if(!layer) {
+      layer = {};
       layer.classname = classname;
       layer.name = classname.replaceAll("_", " ");
       layer.layerid = classname;
