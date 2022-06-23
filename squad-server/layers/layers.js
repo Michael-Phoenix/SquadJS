@@ -52,8 +52,8 @@ class Layers {
     Logger.verbose('Layers', 1, `Pulled "${layer}" as a layer.`);
     if(!layer) {
       layer.name = name;
-      layer.classname = name.toString().replaceAll(" ", "_");
-      layer.layerid = name.toString().replaceAll(" ", "_");
+      layer.classname = name.replace(/ /g, "_");
+      layer.layerid = name.replace(/ /g, "_");
     }
     return layer;
 
@@ -65,7 +65,7 @@ class Layers {
     Logger.verbose('Layers', 1, `Pulled "${layer}" as a layer.`);
     if(!layer) {
       layer.classname = classname;
-      layer.name = classname.toString().replaceAll("_", " ");
+      layer.name = classname.replace(/_/g, " ");
       layer.layerid = classname;
     }
     return layer;
