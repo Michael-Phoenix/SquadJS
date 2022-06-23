@@ -189,7 +189,7 @@ export default class SquadServer extends EventEmitter {
 
     this.logParser.on('NEW_GAME', async (data) => {
       data.layer = await Layers.getLayerByClassname(data.layerClassname);
-
+      Logger.verbose('LogParser', 3, `NEW_GAME; ClassName: ${data.layerClassname}; Layer Obj: ${JSON.stringify(data.layer)}`);
       this.layerHistory.unshift({ layer: data.layer, time: data.time });
       this.layerHistory = this.layerHistory.slice(0, this.layerHistoryMaxLength);
 

@@ -40,17 +40,39 @@ class Layers {
     await this.pull();
 
     const matches = this.layers.filter(condition);
-    if (matches.length === 1) return matches[0];
+    //Return first match, even though more than one exists in the list (List Error)
+    if (matches.length >= 1) return matches[0];
 
     return null;
   }
 
-  getLayerByName(name) {
-    return this.getLayerByCondition((layer) => layer.name === name);
+  async getLayerByName(name) {
+    //return at least the info we already have
+    let layer = await this.getLayerByCondition((layer) => layer.name === name);
+    Logger.verbose('Layers', 4, `Pulled "${JSON.stringify(layer)}" as a layer.`);
+    if(!layer) {
+      layer = {};
+      layer.name = name;
+      layer.classname = name.replace(/ /g, "_");
+      layer.layerid = name.replace(/ /g, "_");
+    }
+    Logger.verbose('Layers', 3, `Layer now is "${JSON.stringify(layer)}"`);
+    return layer;
+
   }
 
-  getLayerByClassname(classname) {
-    return this.getLayerByCondition((layer) => layer.classname === classname);
+  async getLayerByClassname(classname) {
+    //return at least the info we already have
+    let layer = await this.getLayerByCondition((layer) => layer.classname === classname);
+    Logger.verbose('Layers', 4, `Pulled "${JSON.stringify(layer)}" as a layer.`);
+    if(!layer) {
+      layer = {};
+      layer.classname = classname;
+      layer.name = classname.replace(/_/g, " ");
+      layer.layerid = classname;
+    }
+    Logger.verbose('Layers', 3, `Layer now is "${JSON.stringify(layer)}"`);
+    return layer;
   }
 }
 
