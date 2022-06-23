@@ -49,6 +49,7 @@ class Layers {
   getLayerByName(name) {
     //return at least the info we already have
     let layer = this.getLayerByCondition((layer) => layer.name === name);
+    Logger.verbose('Layers', 1, `Pulled "${layer}" as a layer.`);
     if(!layer) {
       layer = {};
       layer.name = name;
@@ -62,6 +63,7 @@ class Layers {
   getLayerByClassname(classname) {
     //return at least the info we already have
     let layer = this.getLayerByCondition((layer) => layer.classname === classname);
+    Logger.verbose('Layers', 1, `Pulled "${layer}" as a layer.`);
     if(!layer) {
       layer = {};
       layer.classname = classname;
