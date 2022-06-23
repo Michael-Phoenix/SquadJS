@@ -53,8 +53,8 @@ class Layers {
     if(!layer) {
       layer = {};
       layer.name = name;
-      layer.classname = name.toString().replaceAll(" ", "_");
-      layer.layerid = name.toString().replaceAll(" ", "_");
+      layer.classname = name.replace(/ /g, "_");
+      layer.layerid = name.replace(/ /g, "_");
     }
     return layer;
 
@@ -67,7 +67,7 @@ class Layers {
     if(!layer) {
       layer = {};
       layer.classname = classname;
-      layer.name = classname.toString().replaceAll("_", " ");
+      layer.name = classname.replace(/_/g, " ");
       layer.layerid = classname;
     }
     return layer;
