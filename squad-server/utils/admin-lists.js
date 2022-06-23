@@ -51,6 +51,11 @@ export default async function fetchAdminLists(adminLists) {
     }
     for (const m of data.matchAll(adminRgx)) {
       try {
+        Logger.verbose(
+          'SquadServer',
+          1,
+          `Group String: ${m.toString()}`
+        );
         const group = groups[`${idx}-${m.groups.groupID}`];
         const perms = {};
         for (const groupPerm of group) perms[groupPerm.toLowerCase()] = true;
