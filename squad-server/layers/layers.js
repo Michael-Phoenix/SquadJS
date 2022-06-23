@@ -49,13 +49,14 @@ class Layers {
   async getLayerByName(name) {
     //return at least the info we already have
     let layer = await this.getLayerByCondition((layer) => layer.name === name);
-    Logger.verbose('Layers', 1, `Pulled "${JSON.stringify(layer)}" as a layer.`);
+    Logger.verbose('Layers', 4, `Pulled "${JSON.stringify(layer)}" as a layer.`);
     if(!layer) {
+      layer = {};
       layer.name = name;
       layer.classname = name.replace(/ /g, "_");
       layer.layerid = name.replace(/ /g, "_");
     }
-    Logger.verbose('Layers', 1, `Layer now is "${JSON.stringify(layer)}"`);
+    Logger.verbose('Layers', 3, `Layer now is "${JSON.stringify(layer)}"`);
     return layer;
 
   }
@@ -63,13 +64,14 @@ class Layers {
   async getLayerByClassname(classname) {
     //return at least the info we already have
     let layer = await this.getLayerByCondition((layer) => layer.classname === classname);
-    Logger.verbose('Layers', 1, `Pulled "${JSON.stringify(layer)}" as a layer.`);
+    Logger.verbose('Layers', 4, `Pulled "${JSON.stringify(layer)}" as a layer.`);
     if(!layer) {
+      layer = {};
       layer.classname = classname;
       layer.name = classname.replace(/_/g, " ");
       layer.layerid = classname;
     }
-    Logger.verbose('Layers', 1, `Layer now is "${JSON.stringify(layer)}"`);
+    Logger.verbose('Layers', 3, `Layer now is "${JSON.stringify(layer)}"`);
     return layer;
   }
 }
