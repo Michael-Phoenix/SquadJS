@@ -47,16 +47,11 @@ export default async function fetchAdminLists(adminLists) {
     const adminRgx = /(?<=^Admin=)(?<steamID>\d+):(?<groupID>\S+)/gm;
 
     for (const m of data.matchAll(groupRgx)) {
-      groups[`${idx}-${m.groups.groupID}`] = m.groups.groupPerms.split(',');
+      groups[`${idx}-${m.groups.groupID.toLowerCase()}`] = m.groups.groupPerms.split(',');
     }
     for (const m of data.matchAll(adminRgx)) {
       try {
-        Logger.verbose(
-          'SquadServer',
-          1,
-          `Group String: ${m.toString()}`
-        );
-        const group = groups[`${idx}-${m.groups.groupID}`];
+        const group = groups[`${idx}-${m.groups.groupID.toLowerCase()}`];
         const perms = {};
         for (const groupPerm of group) perms[groupPerm.toLowerCase()] = true;
 
@@ -80,7 +75,7 @@ export default async function fetchAdminLists(adminLists) {
         Logger.verbose(
           'SquadServer',
           1,
-          `Error parsing admin group ${m.groups.groupID} from admin list: ${list.source}`,
+          `Error parsing admin group ${m.groups.groupID.toLowerCase()} from admin list: ${list.source}`,
           error
         );
       }
