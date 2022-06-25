@@ -156,7 +156,8 @@ export default class BB_DiscordServerRestart extends DiscordBasePlugin {
         embed: {
           title: 'Server is now ready for :seedling:',
           color: this.options.color,
-          timestamp: new Date().toISOString()
+          timestamp: new Date().toISOString(),
+          footer: {text: ""}
         }
       });
     } catch(e) {
