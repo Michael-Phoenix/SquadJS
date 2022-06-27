@@ -84,7 +84,7 @@ export default class SquadServer extends EventEmitter {
             `Error in plugin event handler:`, e
           );
 
-      });
+      };
     });
   }
 
