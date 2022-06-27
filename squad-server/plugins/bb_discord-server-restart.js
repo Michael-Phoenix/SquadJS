@@ -107,7 +107,7 @@ export default class BB_DiscordServerRestart extends DiscordBasePlugin {
       this.server.nextLayer?.layerid === this.options.restart_map)
       return;
 
-    if(this.server.players?.length <= 40) {
+    if(this.server.players?.length <= 20) {
       await this.queueRestart();
       //await this.server.rcon.endMatch();
     }
@@ -154,7 +154,7 @@ export default class BB_DiscordServerRestart extends DiscordBasePlugin {
     try{
       await this.sendDiscordMessage({
         embed: {
-          title: 'Server is now ready for :seedling:',
+          title: 'Server is now restarted and ready for :seedling:',
           color: this.options.color,
           timestamp: new Date().toISOString(),
           footer: {text: ""}
@@ -195,7 +195,7 @@ export default class BB_DiscordServerRestart extends DiscordBasePlugin {
   }
 
   async kickAllPlayers() {
-    await this.doSleep(10000);
+    await this.doSleep(20000);
 
     this.verbose(
       1,
