@@ -67,6 +67,27 @@ export default class SquadServer extends EventEmitter {
     this.syncData = null;
   }
 
+  on(evt, sink){
+    super.on(evt, (...args) => {
+      try {
+        return sink(...args).catch((e) => {
+          Logger.verbose(
+            'Plugins',
+            1,
+            `Error in plugin event handler:`, e
+          );
+        });
+      } catch(e) {
+          Logger.verbose(
+            'Plugins',
+            1,
+            `Error in plugin event handler:`, e
+          );
+
+      });
+    });
+  }
+
   async watch() {
     this.syncData = await this.getSyncLine();
 
@@ -97,6 +118,8 @@ export default class SquadServer extends EventEmitter {
     await this.rcon.disconnect();
     await this.logParser.unwatch();
   }
+
+
 
   setupRCON() {
     this.rcon = new Rcon({
