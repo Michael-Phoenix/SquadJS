@@ -53,7 +53,6 @@ export default class BB_DiscordTeamkill extends DiscordBasePlugin {
 
   async onTeamkill(info) {
     if (!info.attacker) return;
-
     /*const fields = [
       {
         name: "Teamkiller",
