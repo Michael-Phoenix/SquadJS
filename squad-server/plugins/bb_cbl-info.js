@@ -4,11 +4,11 @@ import DiscordBasePlugin from './discord-base-plugin.js';
 
 const { request, gql } = GraphQLRequest;
 
-export default class BB_SCBLInfo extends DiscordBasePlugin {
+export default class BB_CBLInfo extends DiscordBasePlugin {
   static get description() {
     return (
-      'The <code>BB_SCBLInfo</code> plugin alerts admins when a harmful player is detected joining their server based ' +
-      'on data from the <a href="https://squad-community-ban-list.com/">Squad Community Ban List</a>.'
+      'The <code>BB_CBLInfo</code> plugin alerts admins when a harmful player is detected joining their server based ' +
+      'on data from the <a href="https://communitybanlist.com/">Community Ban List</a>.'
     );
   }
 
@@ -30,7 +30,7 @@ export default class BB_SCBLInfo extends DiscordBasePlugin {
         description:
           'Admins will be alerted when a player has this or more reputation points. For more information on ' +
           'reputation points, see the ' +
-          '<a href="https://squad-community-ban-list.com/faq">Squad Community Ban List\'s FAQ</a>',
+          '<a href="https://communitybanlist.com/faq">Community Ban List\'s FAQ</a>',
         default: 6
       },
       kick: {
@@ -63,7 +63,7 @@ export default class BB_SCBLInfo extends DiscordBasePlugin {
   async onPlayerConnected(info) {
     try {
       const data = await request(
-        'https://squad-community-ban-list.com/graphql',
+        'https://communitybanlist.com/graphql',
         gql`
           query Search($id: String!) {
             steamUser(id: $id) {
@@ -118,22 +118,22 @@ export default class BB_SCBLInfo extends DiscordBasePlugin {
 
       let autoKicked = "";
       if(this.options.kick && data.steamUser.riskRating >= this.options.kickThreshold) {
-        await this.server.rcon.kick(info.player.steamID,"https://squad-community-ban-list.com/banned");
+        await this.server.rcon.kick(info.player.steamID,"https://communitybanlist.com/banned");
         autoKicked = " and was automatically kicked";
       }
       await this.sendDiscordMessage({
         embed: {
           title: `${info.player.name} is a potentially harmful player${autoKicked}!`,
           author: {
-            name: 'Squad Community Ban List',
-            url: 'https://squad-community-ban-list.com/',
-            icon_url:
-              'https://cdn.jsdelivr.net/gh/Team-Silver-Sphere/Squad-Community-Ban-List@master/client/src/assets/img/brand/scbl-logo-square.png'
+            name: 'Community Ban List',
+            url: 'https://communitybanlist.com/'//,
+            //icon_url:
+              //'https://cdn.jsdelivr.net/gh/Team-Silver-Sphere/Squad-Community-Ban-List@master/client/src/assets/img/brand/scbl-logo-square.png'
           },
           thumbnail: {
             url: data.steamUser.avatarFull
           },
-          description: `[${info.player.name}](https://www.battlemetrics.com/rcon/players?filter%5Bsearch%5D=${info.player.steamID}) ([SCBL-Link](https://squad-community-ban-list.com/search/${info.player.steamID})) has ${data.steamUser.reputationPoints} reputation points on the Squad Community Ban List and is therefore a potentially harmful player.`,
+          description: `[${info.player.name}](https://www.battlemetrics.com/rcon/players?filter%5Bsearch%5D=${info.player.steamID}) ([CBL-Link](https://communitybanlist.com/search/${info.player.steamID})) has ${data.steamUser.reputationPoints} reputation points on the Community Ban List and is therefore a potentially harmful player.`,
           fields: [
             {
               name: 'Reputation Points',
@@ -168,7 +168,7 @@ export default class BB_SCBLInfo extends DiscordBasePlugin {
     } catch (err) {
       this.verbose(
         1,
-        `Failed to fetch Squad Community Ban List data for player ${info.name} (Steam ID: ${info.steamID}): `,
+        `Failed to fetch Community Ban List data for player ${info.name} (Steam ID: ${info.steamID}): `,
         err
       );
     }
