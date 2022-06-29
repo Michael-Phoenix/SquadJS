@@ -103,11 +103,10 @@ export default class BB_DiscordServerRestart extends DiscordBasePlugin {
     if(currentTime.getUTCHours() < this.options.restart_start ||
       currentTime.getUTCHours() >= this.options.restart_end ||
       (currentTime.getTime() - this.server.lastRestartTime) / (1000 * 3600) < this.options.time_between_restarts ||
-      this.server.currentLayer.layerid === this.options.restart_map ||
-      this.server.nextLayer?.layerid === this.options.restart_map)
+      this.server.currentLayer.layerid === this.options.restart_map)
       return;
 
-    if(this.server.players?.length <= 20) {
+    if(this.server.players?.length <= 20 && this.server.nextLayer?.layerid === this.options.restart_map) {
       await this.queueRestart();
       //await this.server.rcon.endMatch();
     }
