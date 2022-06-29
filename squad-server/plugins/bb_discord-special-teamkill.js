@@ -54,7 +54,7 @@ export default class BB_DiscordSpecialTeamkill extends DiscordBasePlugin {
     const fields = [
       {
         name: "Teamkiller",
-        value: `[${info.attacker.name}](https://www.battlemetrics.com/rcon/players?filter%5Bsearch%5D=${info.attacker.steamID}) - [SCBL-Link](https://squad-community-ban-list.com/search/${info.attacker.steamID})`,
+        value: `[${info.attacker.name}](https://www.battlemetrics.com/rcon/players?filter%5Bsearch%5D=${info.attacker.steamID}) - [CBL-Link](https://communitybanlist.com/search/${info.attacker.steamID})`,
         inline: true
       },
       /*{
