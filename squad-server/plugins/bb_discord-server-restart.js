@@ -106,7 +106,7 @@ export default class BB_DiscordServerRestart extends DiscordBasePlugin {
       this.server.currentLayer.layerid === this.options.restart_map)
       return;
 
-    if(this.server.players?.length <= 20 && this.server.nextLayer?.layerid === this.options.restart_map) {
+    if(this.server.players?.length <= 20 && this.server.nextLayer?.layerid != this.options.restart_map) {
       await this.queueRestart();
       //await this.server.rcon.endMatch();
     }
