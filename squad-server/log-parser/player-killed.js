@@ -13,6 +13,11 @@ export default {
           instagib: (args[3] == 10?true:false),
           victimName: args[4]
         };
+        data = {
+          raw: args[0],
+          time: args[1],
+          chainID: args[2]
+        }
         delete logParser.eventStore.matchData["nullptr"];
       } else {
         delete logParser.eventStore.matchData["nullptr"];
