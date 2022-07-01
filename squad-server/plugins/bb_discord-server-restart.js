@@ -123,11 +123,17 @@ export default class BB_DiscordServerRestart extends DiscordBasePlugin {
     this.preBroadcastInterval?.unref();
     this.broadcast();
     this.interval = setInterval(this.broadcast, 1000);
-    try{
-      await this.kickAllPlayers();
-    } catch(e) {
-      this.verbose(1, `error in kickAllPlayers:`, e);
+
+    let n=0;
+    while (n<3) {
+      try{
+        await this.kickAllPlayers();
+      } catch(e) {
+        this.verbose(1, `error in kickAllPlayers:`, e);
+      }
+      n++;
     }
+
     await this.killServer();
   }
   async queueRestart() {
@@ -194,7 +200,7 @@ export default class BB_DiscordServerRestart extends DiscordBasePlugin {
   }
 
   async kickAllPlayers() {
-    await this.doSleep(20000);
+    await this.doSleep(10000);
 
     this.verbose(
       1,
