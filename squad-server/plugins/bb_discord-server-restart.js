@@ -125,7 +125,7 @@ export default class BB_DiscordServerRestart extends DiscordBasePlugin {
     this.interval = setInterval(this.broadcast, 1000);
 
     let n=0;
-    while (n<3) {
+    while (n<4) {
       try{
         await this.kickAllPlayers();
       } catch(e) {
@@ -189,9 +189,9 @@ export default class BB_DiscordServerRestart extends DiscordBasePlugin {
     if(this.server.currentLayer.layerid === this.options.restart_map){
       this.verbose(
         1,
-        `Kicking ${info.steamID} with restart meassage. (onConnect)`
+        `Kicking ${info.player.steamID} with restart meassage. (onConnect)`
       );
-      this.server.rcon.kick(info.steamID,"Restarting Server. Please find BB | in server browser to connect. Reconnect Button is broken.");
+      this.server.rcon.kick(info.player.steamID,"Restarting Server. Please find BB | in server browser to connect. Reconnect Button is broken.");
     }
   }
 
