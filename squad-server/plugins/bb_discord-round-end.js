@@ -63,7 +63,10 @@ export default class BB_DiscordRoundEnd extends DiscordBasePlugin {
           }
 
         ],
-        timestamp: info.time.toISOString()
+        timestamp: info.time.toISOString(),
+        footer: {
+          text: `${info.time.toISOString()}`
+        }
       }
     });
   }
