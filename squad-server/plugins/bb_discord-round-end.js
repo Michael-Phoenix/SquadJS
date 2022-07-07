@@ -45,13 +45,13 @@ export default class BB_DiscordRoundEnd extends DiscordBasePlugin {
     let team1 = "unknown";
     let team2 = "unknown";
     try {
-      team1 = `${this.server.layerHistory[1].layer.team[0].name}`;
+      team1 = `${this.server.layerHistory[1].layer.teams[0].name}`;
 
     } catch (e) {
       this.verbose(1, `Error while fetching team1: ${e}`);
     }
     try {
-      team2 = `${this.server.layerHistory[1].layer.team[1].name}`;
+      team2 = `${this.server.layerHistory[1].layer.teams[1].name}`;
     } catch (e) {
       this.verbose(1, `Error while fetching team2: ${e}`);
     }
@@ -67,21 +67,21 @@ export default class BB_DiscordRoundEnd extends DiscordBasePlugin {
           {
             name: 'Team1',
             value: `${team1}`,
+            inline: true
           },
           {
             name: 'Team2',
-            value: `${team2}`,
-            inline: true
+            value: `${team2}`
           },
 
           {
             name: 'Last Layer',
             value: `${this.server.layerHistory[1].layer.name}`,
+            inline: true
           },
           {
             name: 'Next Layer',
-            value: `${this.server.currentLayer.name}`,
-            inline: true
+            value: `${this.server.currentLayer.name}`
           }
 
         ],
