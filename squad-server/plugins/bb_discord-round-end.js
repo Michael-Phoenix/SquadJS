@@ -42,11 +42,18 @@ export default class BB_DiscordRoundEnd extends DiscordBasePlugin {
 
   async onNewGame(info) {
     const winnerText = info.winner?info.winner:'Could not be determined.';
-    let teamSetup = "";
+    let team1 = "unknown";
+    let team2 = "unknown";
     try {
-      teamSetup = ` - Team1: ${this.server.layerHistory[1].layer.team[0].name}, Team2: ${this.server.layerHistory[1].layer.team[1].name}`;
+      team1 = `${this.server.layerHistory[1].layer.team[0].name}`;
+
     } catch (e) {
-      this.verbose(1, `Error while fetching team copmposition: ${e}`);
+      this.verbose(1, `Error while fetching team1: ${e}`);
+    }
+    try {
+      team2 = `${this.server.layerHistory[1].layer.team[1].name}`;
+    } catch (e) {
+      this.verbose(1, `Error while fetching team2: ${e}`);
     }
     await this.sendDiscordMessage({
       embed: {
@@ -55,12 +62,21 @@ export default class BB_DiscordRoundEnd extends DiscordBasePlugin {
         fields: [
           {
             name: 'Winner',
-            value: `${winnerText}${teamSetup}`
+            value: `${winnerText}`
           },
+          {
+            name: 'Team1',
+            value: `${team1}`,
+          },
+          {
+            name: 'Team2',
+            value: `${team2}`,
+            inline: true
+          },
+
           {
             name: 'Last Layer',
             value: `${this.server.layerHistory[1].layer.name}`,
-            inline: true
           },
           {
             name: 'Next Layer',
