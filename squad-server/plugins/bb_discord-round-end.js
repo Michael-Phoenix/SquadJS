@@ -42,18 +42,30 @@ export default class BB_DiscordRoundEnd extends DiscordBasePlugin {
 
   async onNewGame(info) {
     const winnerText = info.winner?info.winner:'Could not be determined.';
-    let team1 = "unknown";
-    let team2 = "unknown";
+    let winnerTeam = "Team unknown";
     try {
-      team1 = `${this.server.layerHistory[1].layer.teams[0].name}`;
+      if(winnerText == this.server.layerHistory[1].layer.teams[0].name)
+      winnerTeam = `Team1`;
 
     } catch (e) {
       this.verbose(1, `Error while fetching team1: ${e}`);
     }
     try {
-      team2 = `${this.server.layerHistory[1].layer.teams[1].name}`;
+      if(winnerText == this.server.layerHistory[1].layer.teams[1].name)
+      winnerTeam = `Team2`;
     } catch (e) {
       this.verbose(1, `Error while fetching team2: ${e}`);
+    }
+
+    try {
+      const previousTeams = `\n(${this.server.layerHistory[1].layer.teams[0].name} vs. ${this.server.layerHistory[1].layer.teams[1].name})`;
+    } catch (e) {
+
+    }
+    try {
+      const nextTeams = `\n(${this.server.layerHistory[0].layer.teams[0].name} vs. ${this.server.layerHistory[0].layer.teams[1].name})`;
+    } catch (e) {
+
     }
     await this.sendDiscordMessage({
       embed: {
@@ -62,26 +74,15 @@ export default class BB_DiscordRoundEnd extends DiscordBasePlugin {
         fields: [
           {
             name: 'Winner',
-            value: `${winnerText}`
+            value: `${winnerText} (${team})`
           },
-          {
-            name: 'Team1',
-            value: `${team1}`,
-            inline: true
-          },
-          {
-            name: 'Team2',
-            value: `${team2}`
-          },
-
           {
             name: 'Last Layer',
-            value: `${this.server.layerHistory[1].layer.name}`,
-            inline: true
+            value: `${this.server.layerHistory[1].layer.name}${previousTeams}`
           },
           {
             name: 'Next Layer',
-            value: `${this.server.currentLayer.name}`
+            value: `${this.server.currentLayer.name}${nextTeams}`
           }
 
         ],
