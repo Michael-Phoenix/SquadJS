@@ -43,8 +43,8 @@ export default class BB_DiscordRoundEnd extends DiscordBasePlugin {
   async onNewGame(info) {
     const winnerText = info.winner?info.winner:'Could not be determined.';
     let teamSetup = "";
-    if(this.server.layerHistory[1].layer.team[0].name) {
-      teamSetup = ` - Team1: ${this.server.layerHistory[1].layer.team[0]?.name}, Team2: ${this.server.layerHistory[1].layer.team[1]?.name}`;
+    if(this.server.layerHistory[1].layer?.team?[0].name) {
+      teamSetup = ` - Team1: ${this.server.layerHistory[1].layer?.team?[0].name}, Team2: ${this.server.layerHistory[1].layer?.team?[1].name}`;
     }
     await this.sendDiscordMessage({
       embed: {
