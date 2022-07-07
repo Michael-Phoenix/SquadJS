@@ -43,6 +43,8 @@ export default class BB_DiscordRoundEnd extends DiscordBasePlugin {
   async onNewGame(info) {
     const winnerText = info.winner?info.winner:'Could not be determined.';
     let winnerTeam = "Team unknown";
+    let previousTeams = "";
+    let nextTeams = "";
     try {
       if(winnerText == this.server.layerHistory[1].layer.teams[0].name)
       winnerTeam = `Team1`;
@@ -58,12 +60,12 @@ export default class BB_DiscordRoundEnd extends DiscordBasePlugin {
     }
 
     try {
-      const previousTeams = `\n(${this.server.layerHistory[1].layer.teams[0].name} vs. ${this.server.layerHistory[1].layer.teams[1].name})`;
+      previousTeams = `\n(${this.server.layerHistory[1].layer.teams[0].name} vs. ${this.server.layerHistory[1].layer.teams[1].name})`;
     } catch (e) {
 
     }
     try {
-      const nextTeams = `\n(${this.server.layerHistory[0].layer.teams[0].name} vs. ${this.server.layerHistory[0].layer.teams[1].name})`;
+      nextTeams = `\n(${this.server.layerHistory[0].layer.teams[0].name} vs. ${this.server.layerHistory[0].layer.teams[1].name})`;
     } catch (e) {
 
     }
