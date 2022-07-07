@@ -74,7 +74,7 @@ export default class BB_DiscordRoundEnd extends DiscordBasePlugin {
         fields: [
           {
             name: 'Winner',
-            value: `${winnerText} (${team})`
+            value: `${winnerText} (${winnerTeam})`
           },
           {
             name: 'Last Layer',
