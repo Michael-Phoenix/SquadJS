@@ -24,6 +24,7 @@ import pendingConnectionDestroyed from './pending-connection-destroyed.js';
 import ServerStart from './server-start.js';
 import PlayerKilled from './player-killed.js';
 import PlayerSuicided from './player-suicided.js';
+import EndScreen from './end-screen.js';
 export default class SquadLogParser extends LogParser {
   constructor(options) {
     super('SquadGame.log', options);
@@ -54,7 +55,8 @@ export default class SquadLogParser extends LogParser {
       pendingConnectionDestroyed,
       ServerStart,
       PlayerKilled,
-      PlayerSuicided
+      PlayerSuicided,
+      EndScreen
     ];
   }
 }

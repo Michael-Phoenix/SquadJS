@@ -235,6 +235,11 @@ export default class SquadServer extends EventEmitter {
       await this.updateAdmins();
     });
 
+    this.logParser.on('END_SCREEN', async (data) => {
+      Logger.verbose('LogParser', 1, `END_SCREEN`);
+      this.emitProxy('END_SCREEN', data);
+    });
+
     this.logParser.on('PLAYER_CONNECTED', async (data) => {
       // This is nullable, should we attempt a force update?
       data.player = await this.getPlayerBySteamID(data.steamID);

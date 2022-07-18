@@ -42,7 +42,7 @@ export default class BB_TeamRandomizer extends DiscordBasePlugin {
   constructor(server, options, connectors) {
     super(server, options, connectors);
 
-    this.onNewGame = this.onNewGame.bind(this);
+    this.onEndScreen = this.onEndScreen.bind(this);
     this.doSleep = this.doSleep.bind(this);
     this.onChatCommand = this.onChatCommand.bind(this);
     this.doShuffle = this.doShuffle.bind(this);
@@ -50,12 +50,12 @@ export default class BB_TeamRandomizer extends DiscordBasePlugin {
 
   async mount() {
     this.server.on(`CHAT_COMMAND:${this.options.command}`, this.onChatCommand);
-    this.server.on('NEW_GAME', this.onNewGame);
+    this.server.on('END_SCREEN', this.onEndScreen);
   }
 
   async unmount() {
     this.server.removeEventListener(`CHAT_COMMAND:${this.options.command}`, this.onChatCommand);
-    this.server.removeEventListener('NEW_GAME', this.onNewGame);
+    this.server.removeEventListener('END_SCREEN', this.onEndScreen);
   }
 
   async onChatCommand(info) {
@@ -127,10 +127,10 @@ export default class BB_TeamRandomizer extends DiscordBasePlugin {
 
   }
 
-  async onNewGame(info) {
+  async onEndScreen(info) {
     if(!this.server.pluginData?.shuffleOnNextMap) return;
     this.server.pluginData.shuffleOnNextMap = false;
-    await this.doSleep(5000);
+    await this.doSleep(20000);
     await this.sendDiscordMessage({
       embed: {
         title: 'Team Randomize order executed on layer change.',
@@ -160,9 +160,20 @@ export default class BB_TeamRandomizer extends DiscordBasePlugin {
     let team = '1';
 
     for (const player of players) {
-      if (player.teamID !== team) await this.server.rcon.switchTeam(player.steamID);
+      try{
+        if (player.teamID !== team) await this.server.rcon.switchTeam(player.steamID);
 
-      team = team === '1' ? '2' : '1';
+        team = team === '1' ? '2' : '1';
+        this.verbose(
+          1,
+          `Shuffling Player: ${player.name}}`
+        );
+      } catch(e) {
+        this.verbose(
+          1,
+          `Error while shuffling: ${e}}`
+        );
+      }
     }
   }
 
