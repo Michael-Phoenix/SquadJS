@@ -41,6 +41,8 @@ export default class BB_DiscordRoundEnd extends DiscordBasePlugin {
   }
 
   async onNewGame(info) {
+    await this.server.rcon.broadcast("Don't make a Squad you don't intend to lead! You will be caught and removed!");
+
     const winnerText = info.winner?info.winner:'Could not be determined.';
     let winnerTeam = "Team unknown";
     let previousTeams = "";
