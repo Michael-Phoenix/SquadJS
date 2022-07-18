@@ -4,7 +4,7 @@ export default {
   regex:
     /\[([0-9.:-]+)]\[([ 0-9]*)]LogGameMode: GameMode returned ReadyToEndMatch/,
   onMatch: (args, logParser) => {
-    const data = {,
+    const data = {
       raw: args[0],
       time: args[1],
       chainID: args[2]
