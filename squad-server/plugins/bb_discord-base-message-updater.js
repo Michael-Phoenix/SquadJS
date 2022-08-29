@@ -99,9 +99,10 @@ export default class BB_DiscordBaseMessageUpdater extends BasePlugin {
 
     for (const subscribedMessage of subscribedChannelMessages) {
       const { channelID, messageID } = subscribedMessage;
-      const channel = await this.options.discordClient.channels.fetch(channelID);
-      const message = await channel.messages.fetch(messageID);
       try {
+        const channel = await this.options.discordClient.channels.fetch(channelID);
+        const message = await channel.messages.fetch(messageID);
+
         this.verbose(1, `Deleting message ${messageID} from channel ${channelID}`);
         await message.delete();
       } catch(err) {
