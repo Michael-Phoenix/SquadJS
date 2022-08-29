@@ -86,7 +86,7 @@ export default class BB_DiscordServerStatus extends BB_DiscordBaseMessageUpdater
       true
     );
 
-    let currentTime = new Date().getTime() - (this.server.layerHistory[0]?.time ||new Date().getTime());
+    let currentTime = new Date(new Date().getTime() - (this.server.layerHistory[0]?.time ||new Date().getTime()));
 
     embed.addField(
       'Round Duration',
