@@ -90,10 +90,7 @@ export default class BB_DiscordServerStatus extends BB_DiscordBaseMessageUpdater
 
     embed.addField(
       'Round Duration',
-      `\`\`\`
-      ${currentTime.getHours()}:
-      ${('0' + currentTime.getMinutes()).slice(-2)}:${('0' + currentTime.getSeconds()).slice(-2)}
-      \`\`\``,
+      `\`\`\`${currentTime.getHours()}:${('0' + currentTime.getMinutes()).slice(-2)}:${('0' + currentTime.getSeconds()).slice(-2)}\`\`\``,
       true
     );
 
