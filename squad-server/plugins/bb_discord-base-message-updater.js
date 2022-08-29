@@ -117,6 +117,7 @@ export default class BB_DiscordBaseMessageUpdater extends BasePlugin {
             `Message (Channel ID: ${channelID}, Message ID: ${messageID}) could not be deleted: `,
             err
           );
+        }
       }
     }
 
