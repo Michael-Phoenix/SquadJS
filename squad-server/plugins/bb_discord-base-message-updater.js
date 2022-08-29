@@ -63,6 +63,7 @@ export default class BB_DiscordBaseMessageUpdater extends BasePlugin {
   }
 
   async onDiscordMessage(message) {
+    try {
     // Parse the incoming message.
     const commandMatch = message.content.match(
       new RegExp(`^${this.options.command}$`, 'i')
@@ -87,7 +88,7 @@ export default class BB_DiscordBaseMessageUpdater extends BasePlugin {
 
     const newChannelID = newMessage.channel.id;
     const newMessageID = newMessage.id;
-    
+
     //Delete all prior messages in the same channel
     const subscribedChannelMessages = await this.SubscribedMessage.findAll({
       where: {
@@ -132,7 +133,13 @@ export default class BB_DiscordBaseMessageUpdater extends BasePlugin {
       1,
       `Subscribed message (Channel ID: ${newChannelID}, Message ID: ${newMessageID}) to automated updates.`
     );
-
+  } catch (err) {
+    this.verbose(
+      1,
+      `Error in processing message: `,
+      err
+    );
+  }
     return;
   }
 
