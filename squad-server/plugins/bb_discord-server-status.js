@@ -85,6 +85,15 @@ export default class BB_DiscordServerStatus extends BB_DiscordBaseMessageUpdater
       }\`\`\``,
       true
     );
+    let currentTime = new Date();
+
+    embed.addField(
+      'Round Duration',
+      `\`\`\`${
+        ${currentTime.getTime() - this.server.currentLayer?.time || 'Unknown'}
+      }\`\`\``,
+      true
+    );
 
     // Set layer image.
     embed.setImage(
@@ -93,6 +102,7 @@ export default class BB_DiscordServerStatus extends BB_DiscordBaseMessageUpdater
         : undefined
     );
 
+    embed.setFooter("Last Refreshed:");
     // Set timestamp.
     embed.setTimestamp(new Date());
 
