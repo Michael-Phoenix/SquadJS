@@ -16,7 +16,7 @@ export default class BB_DiscordServerStatus extends BB_DiscordBaseMessageUpdater
 
   static get optionsSpecification() {
     return {
-      ...DiscordBaseMessageUpdater.optionsSpecification,
+      ...BB_DiscordBaseMessageUpdater.optionsSpecification,
       command: {
         required: false,
         description: 'Command name to get message.',
