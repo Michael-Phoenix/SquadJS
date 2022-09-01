@@ -126,7 +126,7 @@ export default class BB_DiscordServerStatus extends BB_DiscordBaseMessageUpdater
     if (!this.options.setBotStatus) return;
 
     await this.options.discordClient.user.setActivity(
-      `(${this.server.a2sPlayerCount}/${this.server.publicSlots}) ${
+      `${this.server.a2sPlayerCount} ${
         this.server.currentLayer?.name || 'Unknown'
       }`,
       { type: 'PLAYING'}
