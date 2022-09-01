@@ -108,11 +108,22 @@ export default class BB_DiscordServerRestart extends DiscordBasePlugin {
 
     if(this.server.players?.length <= 20 && this.server.nextLayer?.layerid != this.options.restart_map) {
       await this.queueRestart();
-      //await this.server.rcon.endMatch();
     }
-
-    if(this.server.players?.length == 0) {
-      await this.killServer();
+    //We have a Safety interval in between two checks to make sure we don't run
+    //into racing conditions on map changes where sometimes the player count gets reported as zero
+    if(this.server.players?.length <= 5 && this.server.players?.length !== 0) {
+      await this.doSleep(240000);
+      if(this.server.players?.length <= 5 && this.server.players?.length !== 0) {
+        await this.initiateRestart(`Initiating restart due to lack of players.`);
+      }
+    }
+    //we have a Safety interval in between two checks to make sure we don't run
+    //into racing conditions on map changes where sometimes the player count gets reported as zero
+    if(this.server.players?.length === 0) {
+      await this.doSleep(240000);
+      if(this.server.players?.length === 0) {
+        await this.initiateRestart(`Initiating restart due to emptiness.`);
+      }
     }
   }
 
@@ -123,9 +134,9 @@ export default class BB_DiscordServerRestart extends DiscordBasePlugin {
     this.preBroadcastInterval?.unref();
     this.broadcast();
     this.interval = setInterval(this.broadcast, 1000);
-
+    //we do several runs on restarting with 10 sec in between each so that we can inform all the slow hardware players as well.
     let n=0;
-    while (n<4) {
+    while (n<5) {
       try{
         await this.kickAllPlayers();
       } catch(e) {
@@ -133,7 +144,6 @@ export default class BB_DiscordServerRestart extends DiscordBasePlugin {
       }
       n++;
     }
-
     await this.killServer();
   }
   async queueRestart() {
