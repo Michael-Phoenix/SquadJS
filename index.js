@@ -1,23 +1,56 @@
 import SquadServerFactory from 'squad-server/factory';
 import printLogo from 'squad-server/logo';
+import Logger from 'core/logger';
 
 async function main() {
-  await printLogo();
+  try{
+    await printLogo();
+  } catch (err) {
+    Logger.verbose(
+      'Main',
+      1,
+      `Error in printLogo():`, err
+    );
+  }
 
   const config = process.env.config;
   const configPath = process.argv[2];
   if (config && configPath) throw new Error('Cannot accept both a config and config path.');
 
   // create a SquadServer instance
-  const server = config
-    ? await SquadServerFactory.buildFromConfigString(config)
-    : await SquadServerFactory.buildFromConfigFile(configPath || './config.json');
+  try{
+    const server = config
+      ? await SquadServerFactory.buildFromConfigString(config)
+      : await SquadServerFactory.buildFromConfigFile(configPath || './config.json');
+    } catch(err){
+      Logger.verbose(
+        'Main',
+        1,
+        `Error in SquadServerFactory get config:`, err
+      );
+    }
 
   // watch the server
-  await server.watch();
+  try{
+    await server.watch();
+  } catch (err) {
+    Logger.verbose(
+      'Main',
+      1,
+      `Error in server.watch():`, err
+    );
+  }
 
   // now mount the plugins
-  await Promise.all(server.plugins.map(async (plugin) => await plugin.mount()));
+  try{
+    await Promise.all(server.plugins.map(async (plugin) => await plugin.mount()));
+  } catch (err) {
+    Logger.verbose(
+      'Main',
+      1,
+      `Error in Plugins:`, err
+    );
+  }
 }
 
 main();
