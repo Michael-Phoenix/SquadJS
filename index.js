@@ -18,17 +18,12 @@ async function main() {
   if (config && configPath) throw new Error('Cannot accept both a config and config path.');
 
   // create a SquadServer instance
-  try{
+
     const server = config
-      ? await SquadServerFactory.buildFromConfigString(config)
-      : await SquadServerFactory.buildFromConfigFile(configPath || './config.json');
-    } catch(err){
-      Logger.verbose(
-        'Main',
-        1,
-        `Error in SquadServerFactory get config:`, err
-      );
-    }
+      ? await SquadServerFactory.buildFromConfigString(config).catch(e => console.log(e))
+      : await SquadServerFactory.buildFromConfigFile(configPath || './config.json').catch(e => console.log(e));
+
+
 
   // watch the server
   try{
